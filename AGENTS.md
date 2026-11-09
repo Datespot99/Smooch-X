@@ -1,4 +1,4 @@
-# Datespot 2.0.1
+# Smooch X
 
 React + Vite + Tailwind CSS project running inside Figma Make.
 
