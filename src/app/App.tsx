@@ -5,7 +5,7 @@ import {
   MessageCircle, ArrowRight, Sparkles, Flame, Copy,
   ExternalLink, Phone, MapPin, Shield, Zap,
   Heart, Camera, UserCheck, Tv2, BellRing,
-  Lock, Headphones, ChevronDown,
+  Lock, Headphones, ChevronDown, Clock,
   CreditCard, Send, Sun, Moon,
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
@@ -24,10 +24,10 @@ import faq5Audio from '../imports/faq5-how-to-join.mp3.mp3';
 
 const ASSET_BASE = import.meta.env.BASE_URL;
 
-const B1        = '#E60012';
-const B2        = '#B80012';
-const ACCENT    = '#E60012';
-const HERO_GRAD = B1;
+const B1        = '#F30202';
+const B2        = '#C40000';
+const ACCENT    = '#F30202';
+const HERO_SOLID = '#C40000';
 
 // Separate desktop and mobile prices; UPI requests use the matching amount.
 const PRICING = {
@@ -40,19 +40,19 @@ const formatPrice = (value: string) => `₹${Number(value).toLocaleString('en-IN
 // ─── Theme system ─────────────────────────────────────────────────────────────
 const DARK_THEME = {
   PAGE_BG:  '#090909',
-  DARK:     '#FFF7F8',
-  MUTED:    '#C4AEB1',
-  CARD_BG:  '#151011',
-  BORDER:   'rgba(230,0,18,0.18)',
-  QUOTE:    '#F9D8DE',
+  DARK:     '#FFF8F8',
+  MUTED:    '#C4ADAD',
+  CARD_BG:  '#150F0F',
+  BORDER:   'rgba(243,2,2,0.18)',
+  QUOTE:    '#F9DADA',
   DOT_BG:   '#090909',
 };
 const LIGHT_THEME = {
   PAGE_BG:  '#FFFFFF',
-  DARK:     '#221014',
-  MUTED:    '#765A5D',
+  DARK:     '#220F0F',
+  MUTED:    '#765959',
   CARD_BG:  '#FFFFFF',
-  BORDER:   'rgba(184,0,18,0.17)',
+  BORDER:   'rgba(196,0,0,0.17)',
   QUOTE:    '#543034',
   DOT_BG:   '#FFFFFF',
 };
@@ -61,10 +61,10 @@ const ThemeCtx = React.createContext<{ theme: TTheme; toggle: () => void }>({
   theme: { ...DARK_THEME, isDark: true }, toggle: () => {},
 });
 const useT = (): TTheme => React.useContext(ThemeCtx).theme;
-// Dot-grid page background (subtle dots in both red themes)
+// Solid-fill SVG dots: no gradients
 const dotGridStyle = (T: TTheme): React.CSSProperties => ({
   backgroundColor: T.DOT_BG,
-  backgroundImage: `radial-gradient(${T.isDark ? 'rgba(255,255,255,0.14)' : 'rgba(184,0,18,0.30)'} 1px, transparent 1.2px)`,
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='1.1' fill='%23${T.isDark ? 'FFFFFF' : 'F30202'}' fill-opacity='${T.isDark ? '0.16' : '0.25'}'/%3E%3C/svg%3E")`,
   backgroundSize: '24px 24px',
 });
 
@@ -88,10 +88,10 @@ function ThemeToggle() {
     <motion.button
       onClick={toggle} whileTap={{ scale: 0.9 }}
       className="fixed top-3 right-3 z-50 w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
-      style={{ background: theme.isDark ? 'rgba(255,255,255,0.08)' : 'rgba(230,0,18,0.06)', border: `1px solid ${theme.isDark ? 'rgba(255,255,255,0.12)' : 'rgba(230,0,18,0.2)'}` }}>
+      style={{ background: theme.isDark ? 'rgba(255,255,255,0.08)' : 'rgba(243,2,2,0.06)', border: `1px solid ${theme.isDark ? 'rgba(255,255,255,0.12)' : 'rgba(243,2,2,0.2)'}` }}>
       {theme.isDark
-        ? <Sun className="w-4 h-4" style={{ color: '#E60012' }} />
-        : <Moon className="w-4 h-4" style={{ color: '#E60012' }} />}
+        ? <Sun className="w-4 h-4" style={{ color: '#F30202' }} />
+        : <Moon className="w-4 h-4" style={{ color: '#F30202' }} />}
     </motion.button>
   );
 }
@@ -103,29 +103,61 @@ const CARD_BG = DARK_THEME.CARD_BG;
 const DOT_BG  = DARK_THEME.DOT_BG;
 
 const FEAT: { icon: React.ElementType; title: string; desc: string; badge?: string; c1: string; c2: string }[] = [
-  { icon: UserCheck,     title: 'VIP Women Profiles',         desc: 'Explore VIP women profiles in Smooch X',            c1: '#E60012', c2: '#B80012', badge: 'VIP' },
-  { icon: Lock,          title: 'Free Private Pass',          desc: 'Private pass included at no extra charge',          c1: '#D82D3D', c2: '#CF0D28', badge: 'FREE' },
-  { icon: Flame,         title: 'Free In-Group Exclusive Content', desc: 'Exclusive content inside the group at no extra charge', c1: '#C90019', c2: '#EF3D4B', badge: 'FREE' },
-  { icon: Sparkles,      title: 'Premium Services',           desc: 'Access to Smooch X premium services',               c1: '#A80018', c2: '#CE1628' },
-  { icon: MessageCircle, title: 'WhatsApp Access',            desc: 'WhatsApp access with Smooch X membership',          c1: '#B80012', c2: '#E60012' },
+  { icon: UserCheck,     title: 'VIP Women Profiles',         desc: 'Explore VIP women profiles in Smooch X',            c1: '#F30202', c2: '#C40000', badge: 'VIP' },
+  { icon: Lock,          title: 'Free Private Pass',          desc: 'Private pass included at no extra charge',          c1: '#EB2727', c2: '#D31414', badge: 'FREE' },
+  { icon: Flame,         title: 'Free In-Group Exclusive Content', desc: 'Exclusive content inside the group at no extra charge', c1: '#DC1010', c2: '#FF4C4C', badge: 'FREE' },
+  { icon: Sparkles,      title: 'Premium Services',           desc: 'Access to Smooch X premium services',               c1: '#A80000', c2: '#D31B1B' },
+  { icon: MessageCircle, title: 'WhatsApp Access',            desc: 'WhatsApp access with Smooch X membership',          c1: '#C40000', c2: '#F30202' },
+  { icon: Clock,         title: 'Higher Group Hours',         desc: 'More group access time than Datespot',                c1: '#D31414', c2: '#F30202', badge: 'MORE TIME' },
 ];
 
 const IMAGES   = [galleryImg1, galleryImg2, galleryImg3, galleryImg4, galleryImg5, galleryImg6];
 const VIDEOS   = ['https://player.vimeo.com/video/1182421154', 'https://player.vimeo.com/video/1182421156'];
 const QUESTIONS = ['Is this genuine?', 'How much is entry fee?', 'Refunds available?', 'Genuine Bangalore girls?', 'How to join?'];
 const AUDIO_FILES = [null, null, null, faq4Audio, faq5Audio];
-const REVIEWS = [
-  { name: 'Rahul M.',       area: 'Koramangala', text: 'Way better than any dating app I have tried. Met two amazing women so far, both real and verified.' },
-  { name: 'Vikram Shetty.', area: 'Indiranagar',  text: 'Finally ondhu genuine group sikthu. Admin is very responsive and the crowd is legit. Genuinely recommend.' },
-  { name: 'Karan D.',       area: 'HSR Layout',   text: 'Real girls, real chats. Nothing like the fake bots on Tinder or Bumble. Worth every rupee.' },
-  { name: 'Aditya P.',      area: 'Whitefield',   text: "Was skeptical at first but it's 100% worth it. The voice call feature is a great way to vibe before meeting." },
-  { name: 'Rohan Gowda.',   area: 'JP Nagar',     text: 'Already arranged a meet within my first week. Active group, daily new faces. Super recommend bro.' },
-  { name: 'Suresh Naik.',   area: 'Marathahalli', text: 'Met my current girlfriend here lol. Very organised, zero spam and the admin actually screens people.' },
-  { name: 'Arjun K.',       area: 'Jayanagar',    text: 'The group is always active, quality women from Bangalore.' },
-  { name: 'Dev Menon.',     area: 'BTM Layout',   text: 'Three meets in two months. The vibe here is very different from regular apps — feels real and personal.' },
-  { name: 'Sagar R.',       area: 'Electronic City', text: 'Legit group. Admin does proper verification so you know everyone is genuine. No nonsense.' },
-  { name: 'Nikhil T.',      area: 'Yelahanka',    text: 'Joined on a friend\'s suggestion and I\'m glad I did. Active daily, good conversations and easy to arrange meets.' },
+const UPGRADE_EXPERIENCES = [
+  { title: 'More group time', before: 'Limited group hours', after: 'Higher group hours', detail: 'More time to participate in Smooch X conversations and activities.' },
+  { title: 'Private pass included', before: 'Paid private pass', after: 'Free private pass', detail: 'Private pass access is included with the Smooch X upgrade.' },
+  { title: 'Content without add-on fees', before: 'Paid exclusive content', after: 'Free in-group exclusive content', detail: 'In-group exclusive content without a separate content charge.' },
+  { title: 'VIP profiles', before: 'Limited women profiles', after: 'VIP women profiles', detail: 'Access to the VIP women profile selection.' },
+  { title: 'More ways to connect', before: 'No WhatsApp access', after: 'WhatsApp access', detail: 'WhatsApp access becomes part of the upgraded membership.' },
+  { title: 'Premium options', before: 'Standard group benefits', after: 'Premium services', detail: 'Explore the premium services available in Smooch X.' },
 ];
+
+function UpgradeExperiences() {
+  const T = useT();
+  return (
+    <section className="py-6" aria-labelledby="upgrade-experiences-heading">
+      <div className="mb-5">
+        <span className="text-[10px] sm:text-xs uppercase tracking-widest font-extrabold" style={{ color: T.isDark ? '#FF9999' : B2 }}>From Datespot to Smooch X</span>
+        <h2 id="upgrade-experiences-heading" className="font-black text-xl md:text-3xl mt-1" style={{ color: T.DARK }}>The upgrade experience</h2>
+        <p className="text-xs md:text-sm font-medium mt-1" style={{ color: T.MUTED }}>See how your membership benefits change after upgrading.</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {UPGRADE_EXPERIENCES.map((story, i) => (
+          <article key={story.title} className="rounded-2xl p-4 sm:p-5"
+            style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}`, borderTop: `3px solid ${B1}` }}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] font-black uppercase tracking-wider" style={{ color: T.isDark ? '#FF9999' : B2 }}>Upgrade benefit {String(i + 1).padStart(2, '0')}</span>
+              <Sparkles className="w-4 h-4" style={{ color: B1 }} />
+            </div>
+            <h3 className="font-extrabold text-sm sm:text-base mb-3" style={{ color: T.DARK }}>{story.title}</h3>
+            <div className="rounded-xl p-3 mb-2" style={{ background: T.isDark ? '#261414' : '#FFF2F2' }}>
+              <span className="block text-[10px] font-bold uppercase mb-1" style={{ color: T.MUTED }}>Datespot</span>
+              <span className="text-xs sm:text-sm font-semibold" style={{ color: T.MUTED }}>{story.before}</span>
+            </div>
+            <div className="rounded-xl p-3 mb-3" style={{ background: T.isDark ? '#421818' : '#FFE2E2' }}>
+              <span className="block text-[10px] font-black uppercase mb-1" style={{ color: T.isDark ? '#FF9999' : B2 }}>Smooch X</span>
+              <span className="text-xs sm:text-sm font-extrabold" style={{ color: T.DARK }}>{story.after}</span>
+            </div>
+            <p className="text-xs leading-relaxed" style={{ color: T.MUTED }}>{story.detail}</p>
+          </article>
+        ))}
+      </div>
+      <p className="text-[10px] font-medium mt-3" style={{ color: T.MUTED }}>Illustrative benefit comparisons, not customer testimonials.</p>
+    </section>
+  );
+}
 
 // ─── Glassmorphic blob ────────────────────────────────────────────────────────
 function GlassBlob({ size, top, left, right, bottom, rotate = 0, rx = '62% 38% 70% 30% / 45% 55% 45% 55%' }: {
@@ -172,17 +204,17 @@ function GroupPreviewSlider({ images, mobile = false }: { images: string[]; mobi
             <h2 className="font-extrabold text-xl" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>Group Preview</h2>
             <p className="text-xs font-semibold mt-0.5" style={{ color: T.MUTED }}>Swipe for screenshots </p>
           </div>
-          <span className="text-[10px] font-bold px-3 py-1.5 rounded-full text-white" style={{ background: HERO_GRAD, color: '#FFFFFF' }}>
+          <span className="text-[10px] font-bold px-3 py-1.5 rounded-full text-white" style={{ background: HERO_SOLID, color: '#FFFFFF' }}>
             {current + 1} / {images.length}
           </span>
         </div>
         <div className="flex justify-center">
           <div className="relative" style={{ width: '72vw', maxWidth: 240 }}>
             {/* Glow halo */}
-            <div className="absolute inset-0 rounded-3xl blur-2xl opacity-30 scale-95" style={{ background: HERO_GRAD }} />
+            <div className="absolute inset-0 rounded-3xl blur-2xl opacity-30 scale-95" style={{ background: HERO_SOLID }} />
             <div
               className="relative overflow-hidden rounded-3xl shadow-2xl"
-              style={{ aspectRatio: '9/16', border: '2.5px solid rgba(230,0,18,0.2)' }}
+              style={{ aspectRatio: '9/16', border: '2.5px solid rgba(243,2,2,0.2)' }}
             >
               <AnimatePresence custom={direction} mode="popLayout">
                 <motion.img
@@ -219,8 +251,8 @@ function GroupPreviewSlider({ images, mobile = false }: { images: string[]; mobi
         </div>
         <div className="flex justify-center">
           <div className="relative" style={{ width: 300 }}>
-            <div className="absolute inset-0 rounded-[2.5rem] blur-3xl opacity-25 scale-90" style={{ background: HERO_GRAD }} />
-            <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl" style={{ aspectRatio: '9/16', border: '3px solid rgba(26,114,232,0.18)' }}>
+            <div className="absolute inset-0 rounded-[2.5rem] blur-3xl opacity-25 scale-90" style={{ background: HERO_SOLID }} />
+            <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl" style={{ aspectRatio: '9/16', border: '3px solid rgba(243,2,2,0.18)' }}>
               <AnimatePresence custom={direction} mode="popLayout">
                 <motion.img
                   key={current} src={images[current]} alt={`Preview ${current + 1}`}
@@ -308,7 +340,7 @@ function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void
       style={{
         fontFamily: "'Plus Jakarta Sans', sans-serif",
         backgroundColor: T.PAGE_BG,
-        backgroundImage: `radial-gradient(ellipse 58% 53% at 50% 50%,rgba(230,0,18,${T.isDark ? '.18' : '.09'}),transparent 80%),radial-gradient(circle,rgba(230,0,18,${T.isDark ? '.15' : '.18'}) 1px,transparent 1px)`,
+        backgroundImage: `radial-gradient(ellipse 58% 53% at 50% 50%,rgba(243,2,2,${T.isDark ? '.18' : '.09'}),transparent 80%),radial-gradient(circle,rgba(243,2,2,${T.isDark ? '.15' : '.18'}) 1px,transparent 1px)`,
         backgroundSize: 'auto, 22px 22px',
       }}>
       <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={gate ? undefined : onClose} />
@@ -325,9 +357,9 @@ function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void
               left: photo.side === 'left' ? (photo.near ? 'calc(50% - clamp(190px, 31vw, 410px))' : 'calc(50% - clamp(300px, 42vw, 575px))') : undefined,
               right: photo.side === 'right' ? (photo.near ? 'calc(50% - clamp(190px, 31vw, 410px))' : 'calc(50% - clamp(300px, 42vw, 575px))') : undefined,
               transform: `rotate(${photo.side === 'left' ? (photo.near ? -11 : -17) : (photo.near ? 11 : 17)}deg)`,
-              border: '1px solid rgba(230,0,18,.55)',
+              border: '1px solid rgba(243,2,2,.55)',
               boxShadow: '0 8px 35px rgba(8,64,32,.22)',
-              backgroundColor: '#1C1012',
+              backgroundColor: '#1C0F0F',
             }}>
             <AnimatePresence mode="wait">
               <motion.div key={(galleryIndex + i * 2) % 10}
@@ -362,7 +394,7 @@ function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void
                       width: 'clamp(74px,20vw,92px)',
                       height: 'clamp(99px,26.67vw,123px)',
                       transform: `rotate(${[-5, -2, 2, 5, -3, 3, -4, 4, -2, 2][i]}deg)`,
-                      border: '1px solid rgba(230,0,18,.65)',
+                      border: '1px solid rgba(243,2,2,.65)',
                       boxShadow: '0 7px 20px rgba(0,0,0,.28)',
                       ...photoStyle(i),
                     }} />
@@ -379,9 +411,9 @@ function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void
         transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
         role="dialog" aria-modal="true" aria-label="Enter your details"
         className="relative w-full max-w-[440px] rounded-[22px] sm:rounded-[24px] overflow-hidden shrink-0"
-        style={{ background: T.CARD_BG, border: '1px solid rgba(230,0,18,.55)', boxShadow: T.isDark ? '0 28px 80px rgba(0,0,0,.55)' : '0 20px 60px rgba(90,10,20,.13)' }}>
+        style={{ background: T.CARD_BG, border: '1px solid rgba(243,2,2,.55)', boxShadow: T.isDark ? '0 28px 80px rgba(0,0,0,.55)' : '0 20px 60px rgba(90,10,20,.13)' }}>
         {!gate && <button onClick={onClose} aria-label="Close" className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10">
-          <X className="w-4 h-4" style={{ color: '#C4AEB1' }} />
+          <X className="w-4 h-4" style={{ color: '#C4ADAD' }} />
         </button>}
         <div className="px-5 py-5 sm:px-9 sm:py-9">
           <div className="flex justify-center items-center gap-2 mb-4 sm:mb-7">
@@ -398,13 +430,13 @@ function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void
               <input id="ds-signup-name" type="text" autoComplete="name" placeholder="Enter your full name"
                 value={name} onChange={e => setName(e.target.value)}
                 className="w-full rounded-xl px-4 py-3 sm:py-3.5 outline-none text-sm font-semibold transition-all"
-                style={{ background: T.isDark ? '#100A0B' : '#FFF7F8', border: `1px solid ${name ? B1 : (T.isDark ? '#53242B' : '#F8CDD2')}`, color: T.DARK, caretColor: B2 }} />
+                style={{ background: T.isDark ? '#100909' : '#FFF8F8', border: `1px solid ${name ? B1 : (T.isDark ? '#522222' : '#F8D0D0')}`, color: T.DARK, caretColor: B2 }} />
             </div>
             <div>
               <label htmlFor="ds-signup-phone" className="block text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: T.MUTED }}>Mobile Number</label>
               <div className="flex items-center rounded-xl overflow-hidden"
-                style={{ background: T.isDark ? '#100A0B' : '#FFF7F8', border: `1px solid ${phone ? B1 : (T.isDark ? '#53242B' : '#F8CDD2')}` }}>
-                <span className="px-3.5 py-3 sm:py-3.5 text-sm font-bold shrink-0" style={{ color: T.MUTED, borderRight: `1px solid ${T.isDark ? '#53242B' : '#F8CDD2'}` }}>+91</span>
+                style={{ background: T.isDark ? '#100909' : '#FFF8F8', border: `1px solid ${phone ? B1 : (T.isDark ? '#522222' : '#F8D0D0')}` }}>
+                <span className="px-3.5 py-3 sm:py-3.5 text-sm font-bold shrink-0" style={{ color: T.MUTED, borderRight: `1px solid ${T.isDark ? '#522222' : '#F8D0D0'}` }}>+91</span>
                 <input id="ds-signup-phone" type="tel" inputMode="numeric" autoComplete="tel-national"
                   placeholder="Enter 10-digit number" value={phone} maxLength={10}
                   onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
@@ -419,7 +451,7 @@ function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void
             )}
             <button type="submit" disabled={loading}
               className="w-full rounded-xl py-3 sm:py-3.5 mt-1 font-extrabold text-sm flex items-center justify-center gap-2 transition-transform active:scale-[.98] disabled:opacity-70"
-              style={{ background: B1, color: '#FFFFFF', boxShadow: '0 6px 22px rgba(230,0,18,.25)' }}>
+              style={{ background: B1, color: '#FFFFFF', boxShadow: '0 6px 22px rgba(243,2,2,.25)' }}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>{gate ? 'Continue' : 'Continue to Payment'}</span><ArrowRight className="w-4 h-4" /></>}
             </button>
             <p className="text-center text-[11px] font-medium" style={{ color: T.MUTED }}>🔒 Your info is private &amp; never shared</p>
@@ -436,9 +468,9 @@ function StatsRow({ onJoin }: { onJoin: () => void }) {
   const [idx, setIdx] = useState(0);
   const items = [
     { value: '100+', label: 'Members', icon: Users, c1: B1, c2: B2 },
-    { value: 'Daily', label: 'Active', icon: Zap, c1: '#C90019', c2: '#EF3D4B' },
-    { value: '100%', label: 'Verified', icon: Shield, c1: '#B5122A', c2: '#E33A50' },
-    { value: '18+', label: 'Content', icon: Flame, c1: '#A80018', c2: '#CE1628' },
+    { value: 'Daily', label: 'Active', icon: Zap, c1: '#DC1010', c2: '#FF4C4C' },
+    { value: '100%', label: 'Verified', icon: Shield, c1: '#B51212', c2: '#F04444' },
+    { value: '18+', label: 'Content', icon: Flame, c1: '#A80000', c2: '#D31B1B' },
   ];
   useEffect(() => {
     const t = setInterval(() => setIdx(p => (p + 1) % items.length), 2400);
@@ -449,55 +481,6 @@ function StatsRow({ onJoin }: { onJoin: () => void }) {
     null
   );
 }
-
-// ─── Reviews Slider ───────────────────────────────────────────────────────────
-const AVATAR_COLORS = ['#E60012', '#AE1628', '#D62B3D', '#B81629', '#B80012', '#E60012', '#A80D23', '#B72D42', '#981C2D', '#B80012'];
-
-function ReviewsStrip() {
-  const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [dragging, setDragging] = useState(false);
-  const dragStartX = useRef(0);
-
-  const initials = (name: string) => name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-
-  useEffect(() => {
-    const t = setInterval(() => { setDirection(1); setCurrent(p => (p + 1) % REVIEWS.length); }, 4000);
-    return () => clearInterval(t);
-  }, []);
-
-  const goTo = (i: number, dir: number) => { setDirection(dir); setCurrent(i); };
-  const prev = () => goTo((current - 1 + REVIEWS.length) % REVIEWS.length, -1);
-  const next = () => goTo((current + 1) % REVIEWS.length, 1);
-
-  const onTouchStart = (e: React.TouchEvent) => { dragStartX.current = e.touches[0].clientX; };
-  const onTouchEnd   = (e: React.TouchEvent) => {
-    const dx = dragStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(dx) > 40) dx > 0 ? next() : prev();
-  };
-  const onMouseDown  = (e: React.MouseEvent) => { setDragging(false); dragStartX.current = e.clientX; };
-  const onMouseUp    = (e: React.MouseEvent) => {
-    const dx = dragStartX.current - e.clientX;
-    if (Math.abs(dx) > 40) { setDragging(true); dx > 0 ? next() : prev(); }
-  };
-
-  const variants = {
-    enter: (d: number) => ({ x: d > 0 ? '60%' : '-60%', opacity: 0, scale: 0.94 }),
-    center: { x: 0, opacity: 1, scale: 1 },
-    exit: (d: number) => ({ x: d > 0 ? '-60%' : '60%', opacity: 0, scale: 0.94 }),
-  };
-
-  const T = useT();
-  const r = REVIEWS[current];
-  const c1 = AVATAR_COLORS[current % AVATAR_COLORS.length];
-  const c2 = AVATAR_COLORS[(current + 3) % AVATAR_COLORS.length];
-
-  return (
-    null
-  );
-}
-
-function ReviewsSlideshow() { return null; }
 
 // ─── Animated Stats ───────────────────────────────────────────────────────────
 function useCountUp(target: number, duration = 1600) {
@@ -528,9 +511,9 @@ function StatsSection() {
   const s1 = useCountUp(548); const s2 = useCountUp(467); const s3 = useCountUp(1000); const s4 = useCountUp(95);
   const stats = [
     { ref: s1.ref, val: s1.val, suffix: '+', label: 'Members', c1: B1, c2: '#D3192D' },
-    { ref: s2.ref, val: s2.val, suffix: '',  label: 'Online Today', c1: '#C90019', c2: '#EF3D4B' },
-    { ref: s3.ref, val: s3.val, suffix: '+', label: 'Successful Joins', c1: '#C4162C', c2: '#D52842' },
-    { ref: s4.ref, val: s4.val, suffix: '%', label: 'Positive Reviews', c1: '#E60012', c2: '#FF8592' },
+    { ref: s2.ref, val: s2.val, suffix: '',  label: 'Online Today', c1: '#DC1010', c2: '#FF4C4C' },
+    { ref: s3.ref, val: s3.val, suffix: '+', label: 'Successful Joins', c1: '#C41616', c2: '#D52842' },
+    { ref: s4.ref, val: s4.val, suffix: '%', label: 'Positive Reviews', c1: '#F30202', c2: '#FF9999' },
   ];
   return (
     <section className="py-5">
@@ -548,8 +531,8 @@ function HowItWorks({ onJoin }: { onJoin: () => void }) {
   const T = useT();
   const steps = [
     { icon: CreditCard, label: 'Pay Entry Fee', desc: `One-time ${formatPrice(PRICING.mobile.amount)} payment via UPI`, c1: B1, c2: '#D3192D' },
-    { icon: Send,       label: 'Join Smooch X', desc: 'Receive the Telegram group link instantly', c1: '#C90019', c2: '#EF3D4B' },
-    { icon: Heart,      label: 'Start Dating',  desc: 'Chat, call & meet verified women', c1: '#C4162C', c2: '#CE1628' },
+    { icon: Send,       label: 'Join Smooch X', desc: 'Receive the Telegram group link instantly', c1: '#DC1010', c2: '#FF4C4C' },
+    { icon: Heart,      label: 'Start Dating',  desc: 'Chat, call & meet verified women', c1: '#C41616', c2: '#D31B1B' },
   ];
   return (
     <section className="py-5">
@@ -558,7 +541,7 @@ function HowItWorks({ onJoin }: { onJoin: () => void }) {
         <p className="text-xs font-semibold mt-0.5" style={{ color: T.MUTED }}>3 simple steps</p>
       </div>
       <div className="relative">
-        <div className="absolute left-[22px] top-6 bottom-6 w-[2px] opacity-20 rounded-full" style={{ background: HERO_GRAD }} />
+        <div className="absolute left-[22px] top-6 bottom-6 w-[2px] opacity-20 rounded-full" style={{ background: HERO_SOLID }} />
         <div className="flex flex-col gap-3">
           {steps.map((st, i) => {
             const Icon = st.icon;
@@ -593,9 +576,9 @@ function WhyTrust() {
   const T = useT();
   const cards = [
     { icon: UserCheck,  title: 'Manual Profile Verification', desc: 'Every member is verified by admin before getting access.', c1: B1, c2: '#D3192D' },
-    { icon: Users,      title: 'Active Bangalore Community',  desc: 'An active community for people in Bangalore.', c1: '#C90019', c2: '#EF3D4B' },
-    { icon: Shield,     title: 'No Fake Profiles Policy',     desc: 'Instant removal of any fake or spam profiles.', c1: '#B5122A', c2: '#E33A50' },
-    { icon: Headphones, title: 'Direct Admin Support',        desc: 'Get help from Subhash directly, fast response guaranteed.', c1: '#C4162C', c2: '#CE1628' },
+    { icon: Users,      title: 'Active Bangalore Community',  desc: 'An active community for people in Bangalore.', c1: '#DC1010', c2: '#FF4C4C' },
+    { icon: Shield,     title: 'No Fake Profiles Policy',     desc: 'Instant removal of any fake or spam profiles.', c1: '#B51212', c2: '#F04444' },
+    { icon: Headphones, title: 'Direct Admin Support',        desc: 'Get help from Subhash directly, fast response guaranteed.', c1: '#C41616', c2: '#D31B1B' },
   ];
   return (
     null
@@ -620,18 +603,19 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
     { feature: 'Exclusive content', smooch: 'Free In-Group Content', datespot: 'Paid Exclusive Content', datespotLimited: true },
     { feature: 'Premium services', smooch: 'Included', datespot: 'Not included', datespotLimited: true },
     { feature: 'WhatsApp access', smooch: 'Included', datespot: 'Not included', datespotLimited: true },
+    { feature: 'Group hours', smooch: 'Higher Group Hours', datespot: 'Limited Group Hours', datespotLimited: true },
   ];
   const borderTop = `1px solid ${T.BORDER}`;
-  const premiumBg = T.isDark ? 'rgba(230,0,18,0.11)' : '#FFF0F2';
+  const premiumBg = T.isDark ? 'rgba(243,2,2,0.11)' : '#FFF1F1';
   return (
     <section className="py-3" aria-labelledby="group-comparison-heading">
       <div className="mb-5">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-extrabold uppercase tracking-wider mb-3"
-          style={{ color: T.isDark ? '#FF8592' : B2, background: premiumBg, border: `1px solid ${T.BORDER}` }}>
+          style={{ color: T.isDark ? '#FF9999' : B2, background: premiumBg, border: `1px solid ${T.BORDER}` }}>
           <Sparkles className="w-3.5 h-3.5" /> The Datespot upgrade
         </span>
         <h2 id="group-comparison-heading" className="font-black text-2xl md:text-4xl tracking-tight leading-tight" style={{ color: T.DARK }}>
-          Datespot is the start. <span style={{ color: T.isDark ? '#FF6472' : B2 }}>Smooch X is the upgrade.</span>
+          Datespot is the start. <span style={{ color: T.isDark ? '#FF7373' : B2 }}>Smooch X is the upgrade.</span>
         </h2>
         <p className="text-xs md:text-base font-medium mt-2" style={{ color: T.MUTED }}>
           See what you unlock when you move from Datespot to Smooch X.
@@ -649,9 +633,9 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
               <th scope="col" className="px-2 sm:px-4 py-4 text-[10px] sm:text-xs font-bold uppercase tracking-wide" style={{ color: T.MUTED }}>
                 Benefits
               </th>
-              <th scope="col" className="px-2 sm:px-4 py-4 text-center" style={{ background: T.isDark ? '#43191F' : '#FFE3E7' }}>
-                <span className="block text-sm sm:text-lg font-black" style={{ color: T.isDark ? '#FF8592' : B2 }}>Smooch X</span>
-                <span className="block text-[9px] sm:text-xs font-extrabold uppercase tracking-wide mt-1" style={{ color: T.isDark ? '#FF8592' : B2 }}>Upgrade</span>
+              <th scope="col" className="px-2 sm:px-4 py-4 text-center" style={{ background: T.isDark ? '#421818' : '#FFE2E2' }}>
+                <span className="block text-sm sm:text-lg font-black" style={{ color: T.isDark ? '#FF9999' : B2 }}>Smooch X</span>
+                <span className="block text-[9px] sm:text-xs font-extrabold uppercase tracking-wide mt-1" style={{ color: T.isDark ? '#FF9999' : B2 }}>Upgrade</span>
               </th>
               <th scope="col" className="px-2 sm:px-4 py-4 text-center">
                 <span className="block text-sm sm:text-lg font-black" style={{ color: T.DARK }}>Datespot</span>
@@ -667,7 +651,7 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
                 </th>
                 <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop, background: premiumBg }}>
                   <span className="inline-flex items-center justify-center gap-1 sm:gap-2 text-[10px] sm:text-sm font-extrabold leading-snug" style={{ color: T.DARK }}>
-                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" style={{ color: T.isDark ? '#FF8592' : B2 }} />
+                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" style={{ color: T.isDark ? '#FF9999' : B2 }} />
                     {row.smooch}
                   </span>
                 </td>
@@ -682,7 +666,7 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
               <th scope="row" className="px-2 sm:px-4 py-4 text-[10px] sm:text-sm font-extrabold" style={{ borderTop, color: T.DARK }}>Upgrade price</th>
               <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop, background: premiumBg }}>
                 <span className="block text-[10px] sm:text-xs line-through" style={{ color: T.MUTED }}>{formatPrice(PRICING.mobile.original)}</span>
-                <span className="block text-lg sm:text-2xl font-black" style={{ color: T.isDark ? '#FF8592' : B2 }}>{formatPrice(PRICING.mobile.amount)}</span>
+                <span className="block text-lg sm:text-2xl font-black" style={{ color: T.isDark ? '#FF9999' : B2 }}>{formatPrice(PRICING.mobile.amount)}</span>
                 <span className="block text-[9px] sm:text-xs font-semibold" style={{ color: T.MUTED }}>Launch offer</span>
               </td>
               <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop }}>
@@ -704,19 +688,39 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
   );
 }
 
-// ─── FAQ ──────────────────────────────────────────────────────────────────────
+// ─── Upgrade FAQs ─────────────────────────────────────────────────────────────
+const UPGRADE_FAQS = [
+  { q: 'Who can upgrade to Smooch X?', a: 'Smooch X is an optional premium upgrade for Datespot members. Enter your Datespot membership number to start. The team must confirm your membership status.' },
+  { q: 'What do I unlock by upgrading?', a: 'VIP women profiles, a free private pass, free in-group exclusive content, premium services, WhatsApp access and higher group hours.' },
+  { q: 'How is Smooch X different from Datespot?', a: 'Datespot offers limited women profiles and group hours, with separate charges for private passes and exclusive content. Smooch X adds VIP profiles, higher group hours and more included benefits.' },
+  { q: 'Are private passes and exclusive content free?', a: 'Yes. The listed private pass and in-group exclusive content are included with Smooch X membership without separate charges. The upgrade itself is paid.' },
+  { q: 'How much does the upgrade cost?', a: `The launch offer is ${formatPrice(PRICING.mobile.amount)}, reduced from ${formatPrice(PRICING.mobile.original)}.` },
+  { q: 'How do I upgrade?', a: 'Enter your Datespot membership number, continue to UPI payment and submit your payment screenshot. The team confirms payment and membership before granting Smooch X access.' },
+  { q: 'What are higher group hours?', a: 'Smooch X offers more group access hours than Datespot. Ask the admin for the current schedule.' },
+  { q: 'Does Smooch X include WhatsApp access?', a: 'Yes, WhatsApp access is an additional Smooch X benefit.' },
+];
+
 function FAQ() {
   const T = useT();
-  const [open, setOpen] = useState<number | null>(null);
-  const items = [
-    { q: 'Is this genuine?', a: 'Smooch X is an admin-led Telegram community. Members must follow the group guidelines and onboarding process.' },
-    { q: 'How do I get access?', a: `Pay ${formatPrice(PRICING.mobile.amount)} via UPI, upload the payment screenshot, and you receive the Telegram group link instantly. The whole process takes under 2 minutes.` },
-    { q: 'Are profiles verified?', a: 'Every profile is manually verified by the admin. Fake profiles, bots, and spam accounts are removed immediately — zero tolerance policy.' },
-    { q: 'Is my privacy protected?', a: 'Absolutely. Your personal details are never shared with other members. The group has strict privacy rules and all screenshots of members are prohibited.' },
-    { q: 'How quickly do I receive access?', a: 'Access is sent within minutes of payment confirmation, typically under 5 minutes. Admin support is available daily for any delays.' },
-  ];
+  const [open, setOpen] = useState<number | null>(0);
   return (
-    null
+    <section className="py-7">
+      <h2 className="text-xl font-extrabold mb-1" style={{ color: T.DARK }}>Upgrade FAQs</h2>
+      <p className="text-xs font-medium mb-4" style={{ color: T.MUTED }}>Everything to know before moving from Datespot to Smooch X</p>
+      <div className="space-y-2.5">
+        {UPGRADE_FAQS.map((item, i) => (
+          <div key={item.q} className="rounded-xl overflow-hidden" style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}` }}>
+            <button type="button" onClick={() => setOpen(open === i ? null : i)}
+              aria-expanded={open === i} aria-controls={`mobile-upgrade-faq-${i}`}
+              className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left">
+              <span className="text-xs font-bold" style={{ color: T.DARK }}>{item.q}</span>
+              <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? 'rotate-180' : ''}`} style={{ color: B1 }} />
+            </button>
+            {open === i && <p id={`mobile-upgrade-faq-${i}`} className="px-4 pb-4 text-xs leading-relaxed" style={{ color: T.MUTED }}>{item.a}</p>}
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -741,7 +745,7 @@ function StickyCTA({ onJoin }: { onJoin: () => void }) {
             onClick={onJoin}
             whileTap={{ scale: 0.97 }}
             className="relative w-full max-w-md mx-auto block rounded-2xl overflow-hidden"
-            style={{ background: HERO_GRAD, boxShadow: `0 6px 28px ${B1}60` }}>
+            style={{ background: HERO_SOLID, boxShadow: `0 6px 28px ${B1}60` }}>
             {/* Shimmer sweep */}
             <motion.div className="absolute inset-0 pointer-events-none"
               animate={{ x: ['-100%', '160%'] }}
@@ -788,7 +792,7 @@ function MobileApp() {
       {/* Main Content */}
       <div className="max-w-md mx-auto px-4">
         <header className="pt-12 pb-6">
-          <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 mb-4 text-[10px] font-extrabold uppercase tracking-wider" style={{ color: T.isDark ? '#FF8592' : B2, background: T.isDark ? '#43191F' : '#FFECEE' }}>
+          <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 mb-4 text-[10px] font-extrabold uppercase tracking-wider" style={{ color: T.isDark ? '#FF9999' : B2, background: T.isDark ? '#421818' : '#FFF0F0' }}>
             <Sparkles className="w-3 h-3" /> Exclusive upgrade for Datespot members
           </div>
           <h1 className="text-[32px] leading-[1.15] font-black tracking-tight mb-3" style={{ color: T.DARK }}>
@@ -807,10 +811,10 @@ function MobileApp() {
 
         {/* Final CTA */}
         <section className="pt-2 pb-8">
-          <div className="rounded-3xl overflow-hidden" style={{ background: T.CARD_BG, border: '1px solid rgba(230,0,18,0.22)', boxShadow: `0 0 40px ${B1}15` }}>
-            <div className="h-[3px]" style={{ background: HERO_GRAD }} />
+          <div className="rounded-3xl overflow-hidden" style={{ background: T.CARD_BG, border: '1px solid rgba(243,2,2,0.22)', boxShadow: `0 0 40px ${B1}15` }}>
+            <div className="h-[3px]" style={{ background: HERO_SOLID }} />
             <div className="px-5 py-5 flex flex-col items-center text-center gap-4">
-              <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest" style={{ color: T.isDark ? B1 : B2, background: T.isDark ? 'rgba(230,0,18,.12)' : '#FFECEE', border: '1px solid rgba(230,0,18,.32)' }}><Sparkles className="w-3 h-3" /> Launch Offer</div>
+              <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest" style={{ color: T.isDark ? B1 : B2, background: T.isDark ? 'rgba(243,2,2,.12)' : '#FFF0F0', border: '1px solid rgba(243,2,2,.32)' }}><Sparkles className="w-3 h-3" /> Launch Offer</div>
 
 
               {/* Price */}
@@ -824,7 +828,7 @@ function MobileApp() {
                 whileTap={{ scale: 0.97 }}
                 onClick={() => handleJoin('full')}
                 className="w-full rounded-xl font-black flex items-center justify-center gap-2 relative overflow-hidden"
-                style={{ background: HERO_GRAD, color: '#FFFFFF', boxShadow: `0 6px 24px ${B1}50`, padding: '14px 20px' }}>
+                style={{ background: HERO_SOLID, color: '#FFFFFF', boxShadow: `0 6px 24px ${B1}50`, padding: '14px 20px' }}>
                 <motion.div className="absolute inset-0"
                   animate={{ x: ['-100%', '100%'] }}
                   transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }}
@@ -882,7 +886,7 @@ function MobileApp() {
         <MeetAdmin />
 
         {/* Reviews slider */}
-        <ReviewsStrip />
+        <UpgradeExperiences />
 
         {/* FAQ */}
         <FAQ />
@@ -922,7 +926,7 @@ export default function App() {
         <div className="min-h-screen w-full relative" style={{
           backgroundColor: '#000000',
           backgroundImage:
-            'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(230,0,18,0.18), transparent 70%), radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1.2px)',
+            'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(243,2,2,0.18), transparent 70%), radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1.2px)',
           backgroundSize: '100% 100%, 24px 24px',
         }}>
           <LeadModal gate onComplete={() => setEntered(true)} />
@@ -987,7 +991,7 @@ function DesktopHero() {
       <div className="grid grid-cols-2 gap-6 lg:gap-12 xl:gap-16 items-center">
         <div className="min-w-0">
           <div className="inline-flex items-center rounded-full px-4 py-2 text-xs font-extrabold uppercase tracking-widest mb-7"
-            style={{ color: B1, background: T.isDark ? 'rgba(230,0,18,.13)' : '#FFFFFF', border: '1px solid rgba(230,0,18,.22)' }}>
+            style={{ color: B1, background: T.isDark ? 'rgba(243,2,2,.13)' : '#FFFFFF', border: '1px solid rgba(243,2,2,.22)' }}>
             <Sparkles className="w-3.5 h-3.5 mr-2" /> Exclusive upgrade for Datespot members
           </div>
           <h1 className="font-black leading-[1.1] mb-3"
@@ -1011,7 +1015,7 @@ function DesktopHero() {
                 <div key={item.label} className="flex items-center gap-2.5 text-xs lg:text-sm font-bold"
                   style={{ color: T.DARK }}>
                   <span className="w-9 h-9 rounded-xl inline-flex items-center justify-center"
-                    style={{ background: T.isDark ? 'rgba(230,0,18,.22)' : '#FFECEE' }}>
+                    style={{ background: T.isDark ? 'rgba(243,2,2,.22)' : '#FFF0F0' }}>
                     <Icon className="w-4 h-4" style={{ color: B1 }} />
                   </span>
                   {item.label}
@@ -1043,7 +1047,7 @@ function DesktopHero() {
               </span>
               <button type="button" onClick={() => changePreview(-1)} aria-label="Previous group preview"
                 className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
-                style={{ color: B1, background: T.CARD_BG, border: '1px solid rgba(230,0,18,.26)' }}>
+                style={{ color: B1, background: T.CARD_BG, border: '1px solid rgba(243,2,2,.26)' }}>
                 <ChevronDown className="w-4 h-4 rotate-90" />
               </button>
               <button type="button" onClick={() => changePreview(1)} aria-label="Next group preview"
@@ -1057,7 +1061,7 @@ function DesktopHero() {
           <div className="relative w-full h-[clamp(245px,28vw,355px)] mt-2" aria-label="Rotating group photo previews">
             <div aria-hidden="true" className="pointer-events-none absolute rounded-full"
               style={{ width: '79%', height: '78%', left: '11%', top: '11%',
-                background: T.isDark ? 'rgba(230,0,18,.11)' : 'rgba(230,0,18,.055)' }} />
+                background: T.isDark ? 'rgba(243,2,2,.11)' : 'rgba(243,2,2,.055)' }} />
             {IMAGES.map((src, i) => {
               const half = Math.floor(IMAGES.length / 2);
               const offset = ((i - previewIndex + IMAGES.length + half) % IMAGES.length) - half;
@@ -1081,7 +1085,7 @@ function DesktopHero() {
                     background: '#211114',
                     border: offset === 0 ? `2px solid ${B1}` : '2px solid rgba(255,255,255,.8)',
                     boxShadow: offset === 0
-                      ? '0 14px 30px rgba(230,0,18,.22)'
+                      ? '0 14px 30px rgba(243,2,2,.22)'
                       : '0 8px 22px rgba(10,40,24,.13)',
                   }}>
                   <img src={src} alt={`Group preview ${i + 1}`}
@@ -1111,18 +1115,11 @@ function DesktopHero() {
 function DesktopFAQ() {
   const T = useT();
   const [open, setOpen] = useState<number | null>(0);
-  const items = [
-    { q: 'Is Smooch X genuine?', a: 'Smooch X is a Bangalore-based Telegram community. The community has guidelines and an admin-led onboarding process.' },
-    { q: 'How do I get access?', a: `Enter your details, make the ${formatPrice(PRICING.desktop.amount)} UPI payment and upload your payment screenshot to continue to the Telegram invitation.` },
-    { q: 'What is included in membership?', a: 'Smooch X includes VIP women profiles, a free private pass, free in-group exclusive content, premium services and WhatsApp access.' },
-    { q: 'Can I use any UPI app?', a: 'You can scan the QR code or use the UPI ID shown on the payment screen with a compatible UPI app.' },
-    { q: 'Is it a one-time fee?', a: `Yes. The current joining price is ${formatPrice(PRICING.desktop.amount)} (original price ${formatPrice(PRICING.desktop.original)}) for lifetime access.` },
-  ];
-  return (
+  const items = UPGRADE_FAQS;  return (
     <div>
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-extrabold mb-2" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>Frequently Asked Questions</h2>
-        <p className="text-base font-medium" style={{ color: T.MUTED }}>Everything you need to know before joining</p>
+        <h2 className="text-3xl font-extrabold mb-2" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>Upgrade FAQs</h2>
+        <p className="text-base font-medium" style={{ color: T.MUTED }}>Your Datespot-to-Smooch X upgrade, explained</p>
       </div>
       <div className="space-y-3">
         {items.map((item, i) => (
@@ -1166,8 +1163,8 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
       <section className="relative max-w-7xl mx-auto px-8 pt-10 pb-16 text-center isolate">
         <div aria-hidden="true" className="pointer-events-none absolute -z-10 rounded-[50%]"
           style={{ width: '92%', height: 230, left: '4%', top: 115,
-            background: T.isDark ? 'rgba(230,0,18,.075)' : 'rgba(230,0,18,.045)' }} />
-        <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-5 text-xs font-extrabold uppercase tracking-widest" style={{ color: T.isDark ? B1 : B2, background: T.isDark ? 'rgba(230,0,18,.12)' : '#FFECEE', border: '1px solid rgba(230,0,18,.28)' }}><Sparkles className="w-4 h-4" /> Launch Offer</div>
+            background: T.isDark ? 'rgba(243,2,2,.075)' : 'rgba(243,2,2,.045)' }} />
+        <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-5 text-xs font-extrabold uppercase tracking-widest" style={{ color: T.isDark ? B1 : B2, background: T.isDark ? 'rgba(243,2,2,.12)' : '#FFF0F0', border: '1px solid rgba(243,2,2,.28)' }}><Sparkles className="w-4 h-4" /> Launch Offer</div>
         <h2 className="font-black text-4xl mb-2" style={{ color: T.DARK, letterSpacing: '-0.04em' }}>Ready to Upgrade?</h2>
         <div className="flex items-baseline gap-3 justify-center mb-5">
           <span className="text-lg line-through font-semibold" style={{ color: T.MUTED }}>{formatPrice(PRICING.desktop.original)}</span>
@@ -1175,7 +1172,7 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
         </div>
         <button type="button" onClick={() => onOpenPayment('full')}
           className="w-full max-w-[360px] rounded-2xl font-extrabold text-base inline-flex items-center justify-center gap-3 px-10 py-4 transition-transform hover:scale-[1.02] active:scale-[.98]"
-          style={{ background: B1, color: '#FFFFFF', boxShadow: '0 8px 22px rgba(230,0,18,.18)' }}>
+          style={{ background: B1, color: '#FFFFFF', boxShadow: '0 8px 22px rgba(243,2,2,.18)' }}>
           Upgrade to Smooch X <ArrowRight className="w-5 h-5" />
         </button>
       </section>
@@ -1227,40 +1224,9 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
       </section>
 
 
-      {/* Reviews grid */}
+      {/* Upgrade experiences */}
       <section className="max-w-5xl mx-auto px-8 pb-12">
-        <div className="text-center mb-8">
-          <h2 className="font-extrabold text-3xl mb-1" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>What Members Say</h2>
-          <p className="text-base font-medium" style={{ color: T.MUTED }}>Real reviews from Bangalore</p>
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          {REVIEWS.slice(0, 6).map((review, i) => (
-            <motion.div key={i}
-              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.07 }}
-              className="rounded-2xl p-5 relative overflow-hidden"
-              style={{ background: T.CARD_BG, border: `1.5px solid ${B1}18`, boxShadow: T.isDark ? 'none' : '0 1px 8px rgba(0,0,0,0.06)' }}>
-              <div className="absolute top-0 left-0 w-1 h-full rounded-l-2xl"
-                style={{ background: `${avatarColors[i % avatarColors.length]}` }} />
-              <div className="flex gap-0.5 mb-2 ml-1">
-                {[...Array(5)].map((_, j) => <Star key={j} className="w-2.5 h-2.5 fill-current" style={{ color: '#E60012' }} />)}
-              </div>
-              <p className="text-sm leading-relaxed mb-3 font-medium ml-1" style={{ color: T.QUOTE }}>"{review.text}"</p>
-              <div className="flex items-center gap-2 ml-1">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center text-white font-black text-[9px] shrink-0"
-                  style={{ background: `${avatarColors[i % avatarColors.length]}` }}>
-                  {initials(review.name)}
-                </div>
-                <div>
-                  <div className="font-bold text-xs" style={{ color: T.DARK }}>{review.name}</div>
-                  <div className="text-[10px] font-semibold flex items-center gap-0.5" style={{ color: T.MUTED }}>
-                    <MapPin className="w-2.5 h-2.5" />{review.area}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        <UpgradeExperiences />
       </section>
 
       {/* FAQ */}
@@ -1269,7 +1235,7 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
       </section>
 
       {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-8 py-8 text-center" style={{ borderTop: `1px solid rgba(230,0,18,0.2)` }}>
+      <footer className="max-w-7xl mx-auto px-8 py-8 text-center" style={{ borderTop: `1px solid rgba(243,2,2,0.2)` }}>
         <p className="text-sm font-semibold" style={{ color: T.MUTED }}>
           © 2026 Smooch X Bangalore · One-time payment · Lifetime access · No hidden fees
         </p>
@@ -1321,7 +1287,7 @@ function ChatOverlay({ onClose, onOpenPayment }: { onClose: () => void; onOpenPa
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
         className="relative w-full max-w-md mx-auto h-[82vh] rounded-t-3xl shadow-2xl flex flex-col overflow-hidden"
         style={{ background: CARD_BG }}>
-        <div className="p-3.5 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(230,0,18,0.15)', background: PAGE_BG }}>
+        <div className="p-3.5 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(243,2,2,0.15)', background: PAGE_BG }}>
           <div className="relative">
             <img src={chatAvatar} alt="Komal" className="w-10 h-10 rounded-full object-cover border-2" style={{ borderColor: B1 }} />
             <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full" />
@@ -1330,7 +1296,7 @@ function ChatOverlay({ onClose, onOpenPayment }: { onClose: () => void; onOpenPa
             <div className="font-bold text-sm" style={{ color: DARK }}>Komal</div>
             <div className="text-[10px] font-semibold" style={{ color: B1 }}>Admin · Online now</div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-full" style={{ background: 'rgba(230,0,18,0.07)' }}>
+          <button onClick={onClose} className="p-2 rounded-full" style={{ background: 'rgba(243,2,2,0.07)' }}>
             <X className="w-4 h-4" style={{ color: MUTED }} />
           </button>
         </div>
@@ -1345,14 +1311,14 @@ function ChatOverlay({ onClose, onOpenPayment }: { onClose: () => void; onOpenPa
                 {msg.type === 'button' ? (
                   <button onClick={() => { toast.success('Opening payment...'); onClose(); setTimeout(() => onOpenPayment(), 300); }}
                     className="px-5 py-2.5 rounded-2xl text-white font-bold text-xs active:scale-95 transition-transform shadow-md"
-                    style={{ background: HERO_GRAD }}>
+                    style={{ background: HERO_SOLID }}>
                     Join for {formatPrice(PRICING.mobile.amount)}
                   </button>
                 ) : (
                   <div className="px-3.5 py-2.5 text-xs shadow-sm"
                     style={msg.sender === 'user'
-                      ? { background: HERO_GRAD, color: 'white', borderRadius: '18px 18px 4px 18px' }
-                      : { background: '#151011', color: DARK, border: '1px solid rgba(230,0,18,0.2)', borderRadius: '18px 18px 18px 4px' }}>
+                      ? { background: HERO_SOLID, color: 'white', borderRadius: '18px 18px 4px 18px' }
+                      : { background: '#150F0F', color: DARK, border: '1px solid rgba(243,2,2,0.2)', borderRadius: '18px 18px 18px 4px' }}>
                     {msg.type === 'text' ? <p>{msg.content}</p> : <VoiceMessageBubble audioSrc={msg.audioSrc} isUser={msg.sender === 'user'} />}
                     <div className="text-[8px] mt-1 opacity-40">{msg.time}</div>
                   </div>
@@ -1363,7 +1329,7 @@ function ChatOverlay({ onClose, onOpenPayment }: { onClose: () => void; onOpenPa
           {isTyping && (
             <div className="flex gap-2">
               <img src={chatAvatar} alt="Komal" className="w-6 h-6 rounded-full object-cover shrink-0" />
-              <div className="px-3.5 py-2.5 rounded-2xl flex gap-0.5 shadow-sm" style={{ background: '#151011', border: '1px solid rgba(230,0,18,0.2)' }}>
+              <div className="px-3.5 py-2.5 rounded-2xl flex gap-0.5 shadow-sm" style={{ background: '#150F0F', border: '1px solid rgba(243,2,2,0.2)' }}>
                 {[0, 1, 2].map(i => (
                   <motion.div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: B1 }}
                     animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
@@ -1375,13 +1341,13 @@ function ChatOverlay({ onClose, onOpenPayment }: { onClose: () => void; onOpenPa
           <div ref={bottomRef} />
         </div>
 
-        <div className="p-4" style={{ background: CARD_BG, borderTop: '1px solid rgba(230,0,18,0.15)' }}>
+        <div className="p-4" style={{ background: CARD_BG, borderTop: '1px solid rgba(243,2,2,0.15)' }}>
           <p className="text-[9px] font-bold mb-2.5 text-center uppercase tracking-widest" style={{ color: MUTED }}>Tap to ask</p>
           <div className="space-y-1.5">
             {QUESTIONS.map((q, i) => (
               <button key={i} onClick={() => handleAsk(q, i)}
                 className="w-full px-3.5 py-2.5 rounded-xl text-left text-xs font-semibold transition-all active:scale-[0.98]"
-                style={{ background: '#151011', border: '1.5px solid rgba(230,0,18,0.2)', color: DARK }}>
+                style={{ background: '#150F0F', border: '1.5px solid rgba(243,2,2,0.2)', color: DARK }}>
                 {q}
               </button>
             ))}
@@ -1506,7 +1472,7 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
     setTimeout(() => {
       setUploadState('success');
       toast.success('Payment verified! Welcome!');
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: [B1, B2, '#fff', '#D82D3D'] });
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: [B1, B2, '#fff', '#EB2727'] });
       setTimeout(() => window.open(TELEGRAM_LINK, '_blank'), 1200);
     }, 2500);
   };
@@ -1542,20 +1508,20 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
           {uploadState === 'idle' && (
             <>
               {/* UPI payment details; countdown does not affect the launch offer. */}
-              <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl mb-3" style={{ background: '#FFECEE', border: '1px solid #F7C3C8' }}>
+              <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl mb-3" style={{ background: '#FFF0F0', border: '1px solid #F7C7C7' }}>
                 <div className="flex items-center gap-2 min-w-0">
                   <CreditCard className="w-3.5 h-3.5 shrink-0" style={{ color: B1 }} />
                   <p className="text-[10px] font-black uppercase tracking-wide" style={{ color: "#000000" }}>Secure UPI Payment</p>
                 </div>
                 <span aria-label={`Countdown ${countdown}`} role="timer"
                   className="text-[12px] font-extrabold tabular-nums rounded-md px-2 py-1 shrink-0"
-                  style={{ background: '#FFFFFF', border: '1px solid #F7C3C8', color: '#70545A' }}>{countdown}</span>
+                  style={{ background: '#FFFFFF', border: '1px solid #F7C7C7', color: '#705454' }}>{countdown}</span>
               </div>
-              <div className="flex rounded-xl p-1 mb-3" style={{ background: '#FFF1F2' }}>
+              <div className="flex rounded-xl p-1 mb-3" style={{ background: '#FFF2F2' }}>
                 {(['qr', 'upi'] as const).map(t => (
                   <button key={t} onClick={() => setTab(t)}
                     className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
-                    style={tab === t ? { background: B1, color: '#FFFFFF' } : { background: 'transparent', color: '#86666B' }}>
+                    style={tab === t ? { background: B1, color: '#FFFFFF' } : { background: 'transparent', color: '#866666' }}>
                     {t === 'qr' ? 'Scan QR' : 'UPI ID'}
                   </button>
                 ))}
@@ -1564,15 +1530,15 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
               <AnimatePresence mode="wait">
                 {tab === 'qr' ? (
                   <motion.div key="qr" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                    <div className="rounded-2xl p-3 mb-2 flex items-center justify-center" style={{ background: '#FFF7F8' }}>
+                    <div className="rounded-2xl p-3 mb-2 flex items-center justify-center" style={{ background: '#FFF8F8' }}>
                       <QRCodeSVG value={upiUrl} size={148} level="H" />
                     </div>
-                    <p className="text-center text-[10px] mb-2 font-medium" style={{ color: "#70545A" }}>Scan with any UPI app</p>
+                    <p className="text-center text-[10px] mb-2 font-medium" style={{ color: "#705454" }}>Scan with any UPI app</p>
                   </motion.div>
                 ) : (
                   <motion.div key="upi" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mb-3">
-                    <div className="rounded-2xl p-4 mb-2" style={{ background: '#FFF7F8' }}>
-                      <p className="text-xs font-bold uppercase tracking-wide mb-1.5" style={{ color: "#70545A" }}>UPI ID</p>
+                    <div className="rounded-2xl p-4 mb-2" style={{ background: '#FFF8F8' }}>
+                      <p className="text-xs font-bold uppercase tracking-wide mb-1.5" style={{ color: "#705454" }}>UPI ID</p>
                       <p className="font-mono text-sm font-bold break-all mb-4 text-gray-800">{UPI_ID}</p>
                       <div className="flex gap-2">
                         <button onClick={() => { navigator.clipboard.writeText(UPI_ID); toast.success('Copied!'); }}
@@ -1582,7 +1548,7 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
                         </button>
                         <a href={upiUrl}
                           className="flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
-                          style={{ background: HERO_GRAD }}
+                          style={{ background: HERO_SOLID }}
                           onClick={() => toast.success('Opening UPI app...')}>
                           <ExternalLink className="w-3.5 h-3.5" /> Pay
                         </a>
@@ -1603,7 +1569,7 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
               </div>
 
               <div className="pt-3 mt-1" style={{ borderTop: `1px solid ${B1}12` }}>
-                <p className="text-center text-[10px] mb-2 font-medium" style={{ color: "#70545A" }}>Upload screenshot to verify payment</p>
+                <p className="text-center text-[10px] mb-2 font-medium" style={{ color: "#705454" }}>Upload screenshot to verify payment</p>
                 <input type="file" id="ss-upload" className="hidden" accept="image/*" onChange={handleFileChange} />
                 <label htmlFor="ss-upload"
                   className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-bold text-sm cursor-pointer active:scale-95 transition-transform"
@@ -1628,7 +1594,7 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               transition={{ type: 'spring', stiffness: 200 }}
               className="text-center py-8">
-              <div className="w-18 h-18 mx-auto rounded-2xl flex items-center justify-center mb-5 shadow-xl" style={{ background: HERO_GRAD, width: 72, height: 72 }}>
+              <div className="w-18 h-18 mx-auto rounded-2xl flex items-center justify-center mb-5 shadow-xl" style={{ background: HERO_SOLID, width: 72, height: 72 }}>
                 <CheckCircle className="w-10 h-10 text-white" />
               </div>
               <p className="font-bold text-xl mb-1 text-gray-900">Payment Verified!</p>
