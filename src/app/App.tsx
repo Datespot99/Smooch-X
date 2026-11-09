@@ -103,10 +103,11 @@ const CARD_BG = DARK_THEME.CARD_BG;
 const DOT_BG  = DARK_THEME.DOT_BG;
 
 const FEAT: { icon: React.ElementType; title: string; desc: string; badge?: string; c1: string; c2: string }[] = [
-  { icon: MessageCircle, title: 'Group Chat',         desc: 'Daily active members',        c1: '#E60012', c2: '#B80012' },
-  { icon: Phone,         title: 'Voice Calls',        desc: 'Talk before you meet',        c1: '#D82D3D', c2: '#CF0D28' },
-  { icon: MapPin,        title: 'Direct Meets',       desc: 'Arrange real-life meetups',   c1: '#C90019', c2: '#EF3D4B' },
-  { icon: Flame,         title: '18+ Exclusive',      desc: 'Photos, videos & more',       c1: '#A80018', c2: '#CE1628', badge: '18+' },
+  { icon: UserCheck,     title: 'VIP Women Profiles',         desc: 'Explore VIP women profiles in Smooch X',            c1: '#E60012', c2: '#B80012', badge: 'VIP' },
+  { icon: Lock,          title: 'Free Private Pass',          desc: 'Private pass included at no extra charge',          c1: '#D82D3D', c2: '#CF0D28', badge: 'FREE' },
+  { icon: Flame,         title: 'Free In-Group Exclusive Content', desc: 'Exclusive content inside the group at no extra charge', c1: '#C90019', c2: '#EF3D4B', badge: 'FREE' },
+  { icon: Sparkles,      title: 'Premium Services',           desc: 'Access to Smooch X premium services',               c1: '#A80018', c2: '#CE1628' },
+  { icon: MessageCircle, title: 'WhatsApp Access',            desc: 'WhatsApp access with Smooch X membership',          c1: '#B80012', c2: '#E60012' },
 ];
 
 const IMAGES   = [galleryImg1, galleryImg2, galleryImg3, galleryImg4, galleryImg5, galleryImg6];
@@ -610,91 +611,93 @@ function MeetAdmin() {
   );
 }
 
-// ─── Smooch X vs Datespot ────────────────────────────────────────────────────
+// ─── Smooch X upgrade comparison ─────────────────────────────────────────────
 function GroupComparison({ onJoin }: { onJoin: () => void }) {
   const T = useT();
   const rows = [
-    { feature: 'Telegram community', smooch: 'Smooch X group', datespot: 'Datespot group' },
-    { feature: 'Group chats', smooch: 'Included', datespot: 'Included' },
-    { feature: 'Voice calls', smooch: 'Included', datespot: 'Included' },
-    { feature: 'In-person meetups', smooch: 'Member-arranged', datespot: 'Member-arranged' },
-    { feature: '18+ content', smooch: 'Included', datespot: 'Included' },
+    { feature: 'Women profiles', smooch: 'VIP Women Profiles', datespot: 'Limited Women', datespotLimited: true },
+    { feature: 'Private pass', smooch: 'Free Private Pass', datespot: 'Paid Private Pass', datespotLimited: true },
+    { feature: 'Exclusive content', smooch: 'Free In-Group Content', datespot: 'Paid Exclusive Content', datespotLimited: true },
+    { feature: 'Premium services', smooch: 'Included', datespot: 'Not included', datespotLimited: true },
+    { feature: 'WhatsApp access', smooch: 'Included', datespot: 'Not included', datespotLimited: true },
   ];
-  const cellStyle = { borderTop: `1px solid ${T.BORDER}` };
+  const borderTop = `1px solid ${T.BORDER}`;
+  const premiumBg = T.isDark ? 'rgba(230,0,18,0.11)' : '#FFF0F2';
   return (
     <section className="py-3" aria-labelledby="group-comparison-heading">
-      <div className="mb-4">
-        <h2 id="group-comparison-heading" className="font-extrabold text-xl md:text-3xl tracking-tight" style={{ color: T.DARK }}>
-          Smooch X vs Datespot
+      <div className="mb-5">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-extrabold uppercase tracking-wider mb-3"
+          style={{ color: T.isDark ? '#FF8592' : B2, background: premiumBg, border: `1px solid ${T.BORDER}` }}>
+          <Sparkles className="w-3.5 h-3.5" /> The Datespot upgrade
+        </span>
+        <h2 id="group-comparison-heading" className="font-black text-2xl md:text-4xl tracking-tight leading-tight" style={{ color: T.DARK }}>
+          Datespot is the start. <span style={{ color: T.isDark ? '#FF6472' : B2 }}>Smooch X is the upgrade.</span>
         </h2>
-        <p className="text-xs md:text-sm font-medium mt-1" style={{ color: T.MUTED }}>
-          Compare what each Telegram community includes
+        <p className="text-xs md:text-base font-medium mt-2" style={{ color: T.MUTED }}>
+          See what you unlock when you move from Datespot to Smooch X.
         </p>
       </div>
       <div className="rounded-2xl md:rounded-3xl overflow-hidden" style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}` }}>
         <table className="w-full table-fixed border-collapse text-left">
           <colgroup>
-            <col style={{ width: '38%' }} />
             <col style={{ width: '32%' }} />
-            <col style={{ width: '30%' }} />
+            <col style={{ width: '36%' }} />
+            <col style={{ width: '32%' }} />
           </colgroup>
           <thead>
             <tr>
-              <th scope="col" className="px-2.5 sm:px-4 py-4 text-[10px] sm:text-xs font-bold uppercase tracking-wide" style={{ color: T.MUTED }}>
-                What you get
+              <th scope="col" className="px-2 sm:px-4 py-4 text-[10px] sm:text-xs font-bold uppercase tracking-wide" style={{ color: T.MUTED }}>
+                Benefits
               </th>
-              <th scope="col" className="px-2 sm:px-4 py-4 text-center" style={{ background: T.isDark ? '#43191F' : '#FFECEE' }}>
-                <span className="block text-sm sm:text-base font-black" style={{ color: T.isDark ? '#FF6472' : '#B80012' }}>Smooch X</span>
-                <span className="block text-[10px] sm:text-xs font-semibold mt-1" style={{ color: T.MUTED }}>Featured</span>
+              <th scope="col" className="px-2 sm:px-4 py-4 text-center" style={{ background: T.isDark ? '#43191F' : '#FFE3E7' }}>
+                <span className="block text-sm sm:text-lg font-black" style={{ color: T.isDark ? '#FF8592' : B2 }}>Smooch X</span>
+                <span className="block text-[9px] sm:text-xs font-extrabold uppercase tracking-wide mt-1" style={{ color: T.isDark ? '#FF8592' : B2 }}>Upgrade</span>
               </th>
               <th scope="col" className="px-2 sm:px-4 py-4 text-center">
-                <span className="block text-sm sm:text-base font-black" style={{ color: T.DARK }}>Datespot</span>
-                <span className="block text-[10px] sm:text-xs font-semibold mt-1" style={{ color: T.MUTED }}>Community</span>
+                <span className="block text-sm sm:text-lg font-black" style={{ color: T.DARK }}>Datespot</span>
+                <span className="block text-[9px] sm:text-xs font-semibold mt-1" style={{ color: T.MUTED }}>Basic group</span>
               </th>
             </tr>
           </thead>
           <tbody>
             {rows.map(row => (
               <tr key={row.feature}>
-                <th scope="row" className="px-2.5 sm:px-4 py-3.5 text-[11px] sm:text-sm font-bold leading-snug" style={{ ...cellStyle, color: T.DARK }}>
+                <th scope="row" className="px-2 sm:px-4 py-4 text-[10px] sm:text-sm font-bold leading-snug" style={{ borderTop, color: T.DARK }}>
                   {row.feature}
                 </th>
-                <td className="px-2 sm:px-4 py-3.5 text-center" style={{ ...cellStyle, background: T.isDark ? 'rgba(230,0,18,0.10)' : '#FFF4F5' }}>
-                  <span className="inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-bold leading-snug" style={{ color: T.DARK }}>
-                    <CheckCircle className="w-3.5 h-3.5 shrink-0" style={{ color: T.isDark ? '#FF6472' : B2 }} />
+                <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop, background: premiumBg }}>
+                  <span className="inline-flex items-center justify-center gap-1 sm:gap-2 text-[10px] sm:text-sm font-extrabold leading-snug" style={{ color: T.DARK }}>
+                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" style={{ color: T.isDark ? '#FF8592' : B2 }} />
                     {row.smooch}
                   </span>
                 </td>
-                <td className="px-2 sm:px-4 py-3.5 text-center" style={cellStyle}>
-                  <span className="inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-semibold leading-snug" style={{ color: T.DARK }}>
-                    <CheckCircle className="w-3.5 h-3.5 shrink-0" style={{ color: T.MUTED }} />
+                <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop }}>
+                  <span className="text-[10px] sm:text-sm font-medium leading-snug" style={{ color: T.MUTED }}>
                     {row.datespot}
                   </span>
                 </td>
               </tr>
             ))}
             <tr>
-              <th scope="row" className="px-2.5 sm:px-4 py-4 text-[11px] sm:text-sm font-extrabold" style={{ ...cellStyle, color: T.DARK }}>Joining fee</th>
-              <td className="px-2 sm:px-4 py-4 text-center" style={{ ...cellStyle, background: T.isDark ? 'rgba(230,0,18,0.10)' : '#FFF4F5' }}>
+              <th scope="row" className="px-2 sm:px-4 py-4 text-[10px] sm:text-sm font-extrabold" style={{ borderTop, color: T.DARK }}>Upgrade price</th>
+              <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop, background: premiumBg }}>
                 <span className="block text-[10px] sm:text-xs line-through" style={{ color: T.MUTED }}>{formatPrice(PRICING.mobile.original)}</span>
-                <span className="block text-base sm:text-xl font-black" style={{ color: T.isDark ? '#FF6472' : B2 }}>{formatPrice(PRICING.mobile.amount)}</span>
-                <span className="block text-[9px] font-semibold" style={{ color: T.MUTED }}>Launch offer</span>
+                <span className="block text-lg sm:text-2xl font-black" style={{ color: T.isDark ? '#FF8592' : B2 }}>{formatPrice(PRICING.mobile.amount)}</span>
+                <span className="block text-[9px] sm:text-xs font-semibold" style={{ color: T.MUTED }}>Launch offer</span>
               </td>
-              <td className="px-2 sm:px-4 py-4 text-center" style={cellStyle}>
-                <a href="https://datespot.in/" target="_blank" rel="noopener noreferrer" className="text-[10px] sm:text-xs font-bold underline underline-offset-2" style={{ color: T.DARK }}>
-                  See current price
-                </a>
+              <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop }}>
+                <span className="text-[10px] sm:text-xs font-semibold" style={{ color: T.MUTED }}>Standard Datespot membership</span>
               </td>
             </tr>
           </tbody>
         </table>
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 p-3 sm:p-4" style={{ borderTop: `1px solid ${T.BORDER}` }}>
-          <button type="button" onClick={onJoin} className="rounded-xl py-3 px-2 text-xs sm:text-sm font-extrabold text-white flex items-center justify-center gap-1.5 transition-transform active:scale-[.98]" style={{ background: B1 }}>
-            Join Smooch X <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+        <div className="p-3 sm:p-5 text-center" style={{ borderTop }}>
+          <p className="text-xs sm:text-sm font-bold mb-3" style={{ color: T.DARK }}>
+            Already a Datespot member? Unlock more with Smooch X.
+          </p>
+          <button type="button" onClick={onJoin} className="w-full rounded-xl py-3.5 px-3 text-sm sm:text-base font-black text-white flex items-center justify-center gap-2 transition-transform active:scale-[.98]" style={{ background: B1 }}>
+            Upgrade to Smooch X <ArrowRight className="w-4 h-4 shrink-0" />
           </button>
-          <a href="https://datespot.in/" target="_blank" rel="noopener noreferrer" className="rounded-xl py-3 px-2 text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5" style={{ color: T.DARK, border: `1px solid ${T.BORDER}` }}>
-            View Datespot <ExternalLink className="w-3.5 h-3.5 shrink-0" />
-          </a>
         </div>
       </div>
     </section>
@@ -745,7 +748,7 @@ function StickyCTA({ onJoin }: { onJoin: () => void }) {
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 1.4, ease: 'easeInOut' }}
               style={{ background: 'rgba(255,255,255,0.14)', width: '60%' }} />
             <div className="relative flex items-center justify-center gap-3 py-3.5 px-6">
-              <span className="font-black text-sm tracking-tight" style={{ color: '#FFFFFF' }}>Join Smooch X</span>
+              <span className="font-black text-sm tracking-tight" style={{ color: '#FFFFFF' }}>Upgrade to Smooch X</span>
               <span className="text-[11px] line-through font-semibold" style={{ color: '#800D1B' }}>{formatPrice(PRICING.mobile.original)}</span>
               <span className="font-black text-sm" style={{ color: '#FFFFFF' }}>{formatPrice(PRICING.mobile.amount)}</span>
               <ArrowRight className="w-4 h-4" style={{ color: '#FFFFFF' }} />
@@ -785,10 +788,15 @@ function MobileApp() {
       {/* Main Content */}
       <div className="max-w-md mx-auto px-4">
         <header className="pt-12 pb-6">
-          <h1 className="text-[32px] leading-[1.15] font-black tracking-tight mb-2" style={{ color: T.DARK }}>
-            Intrested in <span style={{ color: B1 }}>Dating &amp; hookups</span>
+          <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 mb-4 text-[10px] font-extrabold uppercase tracking-wider" style={{ color: T.isDark ? '#FF8592' : B2, background: T.isDark ? '#43191F' : '#FFECEE' }}>
+            <Sparkles className="w-3 h-3" /> Exclusive upgrade for Datespot members
+          </div>
+          <h1 className="text-[32px] leading-[1.15] font-black tracking-tight mb-3" style={{ color: T.DARK }}>
+            Ready to <span style={{ color: B1 }}>upgrade from Datespot?</span>
           </h1>
-          <p className="text-lg font-bold" style={{ color: T.DARK }}>with bangalore women</p>
+          <p className="text-base font-bold leading-relaxed" style={{ color: T.DARK }}>
+            Meet Smooch X: VIP women profiles, free private pass, exclusive content, premium services and WhatsApp access.
+          </p>
         </header>
 
         {/* Stats */}
@@ -821,7 +829,7 @@ function MobileApp() {
                   animate={{ x: ['-100%', '100%'] }}
                   transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }}
                   style={{ background: 'rgba(255,255,255,0.12)' }} />
-                <span className="text-sm tracking-tight relative z-10">Join Smooch X Now</span>
+                <span className="text-sm tracking-tight relative z-10">Upgrade to Smooch X</span>
                 <ArrowRight className="w-4 h-4 relative z-10" />
               </motion.button>
 
@@ -829,11 +837,14 @@ function MobileApp() {
           </div>
         </section>
 
-        {/* What You Get */}
+        {/* See the value of upgrading before the feature list */}
+        <GroupComparison onJoin={() => handleJoin('full')} />
+
+        {/* What You Unlock */}
         <section className="py-5">
           <div className="mb-4">
-            <h2 className="font-extrabold text-xl" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>What You Get</h2>
-            <p className="text-xs font-semibold mt-0.5" style={{ color: T.MUTED }}>Everything inside the group</p>
+            <h2 className="font-extrabold text-xl" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>What You Unlock</h2>
+            <p className="text-xs font-semibold mt-0.5" style={{ color: T.MUTED }}>Premium benefits beyond Datespot</p>
           </div>
           <div className="flex flex-col gap-2.5">
             {FEAT.map((f, i) => {
@@ -876,8 +887,6 @@ function MobileApp() {
         {/* FAQ */}
         <FAQ />
 
-        {/* Smooch X and Datespot comparison */}
-        <GroupComparison onJoin={() => handleJoin('full')} />
 
       </div>
 
@@ -979,23 +988,23 @@ function DesktopHero() {
         <div className="min-w-0">
           <div className="inline-flex items-center rounded-full px-4 py-2 text-xs font-extrabold uppercase tracking-widest mb-7"
             style={{ color: B1, background: T.isDark ? 'rgba(230,0,18,.13)' : '#FFFFFF', border: '1px solid rgba(230,0,18,.22)' }}>
-            Smooch X · Bangalore
+            <Sparkles className="w-3.5 h-3.5 mr-2" /> Exclusive upgrade for Datespot members
           </div>
           <h1 className="font-black leading-[1.1] mb-3"
             style={{ color: T.DARK, fontSize: 'clamp(36px,4.1vw,60px)', letterSpacing: '-0.05em' }}>
-            Intrested in <span style={{ color: B1 }}>Dating &amp; hookups</span>
+            Upgrade from Datespot to <span style={{ color: B1 }}>Smooch X.</span>
           </h1>
           <p className="text-xl lg:text-2xl font-bold mb-5" style={{ color: T.DARK }}>
-            with bangalore women
+            Unlock the premium dating group experience.
           </p>
           <p className="text-base lg:text-lg leading-relaxed max-w-lg mb-8" style={{ color: T.MUTED }}>
-            Discover a Telegram community with group chats, voice calls and opportunities to meet in person.
+            Get VIP women profiles, a free private pass, free in-group exclusive content, premium services and WhatsApp access.
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-4">
             {[
-              { label: 'Group chats', icon: Users },
-              { label: 'Voice calls', icon: Mic },
-              { label: 'Direct meets', icon: MapPin },
+              { label: 'VIP women profiles', icon: UserCheck },
+              { label: 'Free private pass', icon: Lock },
+              { label: 'WhatsApp access', icon: MessageCircle },
             ].map(item => {
               const Icon = item.icon;
               return (
@@ -1105,7 +1114,7 @@ function DesktopFAQ() {
   const items = [
     { q: 'Is Smooch X genuine?', a: 'Smooch X is a Bangalore-based Telegram community. The community has guidelines and an admin-led onboarding process.' },
     { q: 'How do I get access?', a: `Enter your details, make the ${formatPrice(PRICING.desktop.amount)} UPI payment and upload your payment screenshot to continue to the Telegram invitation.` },
-    { q: 'What is included in membership?', a: 'Membership includes the group chat, voice calls, opportunities for direct meets and exclusive 18+ content.' },
+    { q: 'What is included in membership?', a: 'Smooch X includes VIP women profiles, a free private pass, free in-group exclusive content, premium services and WhatsApp access.' },
     { q: 'Can I use any UPI app?', a: 'You can scan the QR code or use the UPI ID shown on the payment screen with a compatible UPI app.' },
     { q: 'Is it a one-time fee?', a: `Yes. The current joining price is ${formatPrice(PRICING.desktop.amount)} (original price ${formatPrice(PRICING.desktop.original)}) for lifetime access.` },
   ];
@@ -1159,7 +1168,7 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
           style={{ width: '92%', height: 230, left: '4%', top: 115,
             background: T.isDark ? 'rgba(230,0,18,.075)' : 'rgba(230,0,18,.045)' }} />
         <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-5 text-xs font-extrabold uppercase tracking-widest" style={{ color: T.isDark ? B1 : B2, background: T.isDark ? 'rgba(230,0,18,.12)' : '#FFECEE', border: '1px solid rgba(230,0,18,.28)' }}><Sparkles className="w-4 h-4" /> Launch Offer</div>
-        <h2 className="font-black text-4xl mb-2" style={{ color: T.DARK, letterSpacing: '-0.04em' }}>Ready to Join?</h2>
+        <h2 className="font-black text-4xl mb-2" style={{ color: T.DARK, letterSpacing: '-0.04em' }}>Ready to Upgrade?</h2>
         <div className="flex items-baseline gap-3 justify-center mb-5">
           <span className="text-lg line-through font-semibold" style={{ color: T.MUTED }}>{formatPrice(PRICING.desktop.original)}</span>
           <span className="font-black text-5xl leading-none" style={{ color: T.isDark ? B1 : B2 }}>{formatPrice(PRICING.desktop.amount)}</span>
@@ -1167,15 +1176,20 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
         <button type="button" onClick={() => onOpenPayment('full')}
           className="w-full max-w-[360px] rounded-2xl font-extrabold text-base inline-flex items-center justify-center gap-3 px-10 py-4 transition-transform hover:scale-[1.02] active:scale-[.98]"
           style={{ background: B1, color: '#FFFFFF', boxShadow: '0 8px 22px rgba(230,0,18,.18)' }}>
-          Join Smooch X Now <ArrowRight className="w-5 h-5" />
+          Upgrade to Smooch X <ArrowRight className="w-5 h-5" />
         </button>
       </section>
 
-      {/* What You Get — row list */}
+      {/* Premium upgrade comparison */}
+      <section className="max-w-4xl mx-auto px-8 pb-12">
+        <GroupComparison onJoin={() => onOpenPayment('full')} />
+      </section>
+
+      {/* What You Unlock — row list */}
       <section className="max-w-5xl mx-auto px-8 pb-12">
         <div className="text-center mb-10">
-          <h2 className="font-extrabold text-4xl mb-2" style={{ color: T.DARK, letterSpacing: '-0.04em' }}>What You Get</h2>
-          <p className="text-lg font-medium" style={{ color: T.MUTED }}>Everything inside the group, from day one</p>
+          <h2 className="font-extrabold text-4xl mb-2" style={{ color: T.DARK, letterSpacing: '-0.04em' }}>What You Unlock</h2>
+          <p className="text-lg font-medium" style={{ color: T.MUTED }}>The extra benefits of upgrading from Datespot</p>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {FEAT.map((f, i) => {
@@ -1212,10 +1226,6 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
         <WhyTrust />
       </section>
 
-      {/* Smooch X and Datespot comparison */}
-      <section className="max-w-4xl mx-auto px-8 pb-12">
-        <GroupComparison onJoin={() => onOpenPayment('full')} />
-      </section>
 
       {/* Reviews grid */}
       <section className="max-w-5xl mx-auto px-8 pb-12">
