@@ -1317,12 +1317,11 @@ function VoiceMessageBubble({ audioSrc, isUser }: { audioSrc?: string; isUser?: 
 }
 
 // ─── Payment Modal ────────────────────────────────────────────────────────────
-type UploadState = 'idle' | 'verifying' | 'success';
+type UploadState = 'idle' | 'submitting' | 'submitted';
 
 function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; paymentType: 'full' | 'demo'; device: PricingDevice }) {
   const UPI_ID        = 'BHARATPE2R0S0C1D6V46619@unitype';
   const { amount: AMOUNT, original: ORIGINAL_AMT } = PRICING[device];
-  const TELEGRAM_LINK = 'https://t.me/+wRAGkbTVLLA0YzQ1';
   const upiUrl        = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent('Smooch X')}&am=${AMOUNT}&cu=INR`;
 
   const [uploadState, setUploadState] = useState<UploadState>('idle');
@@ -1356,29 +1355,23 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setUploadState('verifying');
-    toast.success('Verifying payment...');
-
+    setUploadState('submitting');
     try {
       const base64 = await compressImage(file);
-      const name  = localStorage.getItem('sx_lead_name')  ?? '';
-      const phone = localStorage.getItem('sx_lead_phone') ?? '';
+      const membershipNumber = localStorage.getItem('sx_membership_number') ?? '';
       await fetch(SHEET_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'screenshot', name, phone, mimeType: 'image/jpeg', fileName: `payment_${Date.now()}.jpg`, image: base64 }),
+        body: JSON.stringify({ action: 'screenshot', membershipNumber, mimeType: 'image/jpeg', fileName: `payment_${Date.now()}.jpg`, image: base64 }),
       });
+      // The opaque response does not prove the screenshot was received or the payment verified.
+      setUploadState('submitted');
+      toast.success('Screenshot sent for review');
     } catch {
-      // no-cors — response is opaque, error means network issue
+      setUploadState('idle');
+      toast.error('Upload failed. Please try again.');
     }
-
-    setTimeout(() => {
-      setUploadState('success');
-      toast.success('Payment verified! Welcome!');
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: [B1, B2, '#fff', '#EB2727'] });
-      setTimeout(() => window.open(TELEGRAM_LINK, '_blank'), 1200);
-    }, 2500);
   };
 
   return (
@@ -1399,7 +1392,7 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
           <img src={`${ASSET_BASE}smooch-x-logo.svg`} alt="Smooch X logo"
             className="w-10 h-10 rounded-xl shrink-0 object-cover" />
           <div className="flex-1 min-w-0">
-            <div className="font-bold text-sm leading-none text-gray-900">Join Smooch X</div>
+            <div className="font-bold text-sm leading-none text-gray-900">Upgrade to Smooch X</div>
             <div className="text-[10px] mt-0.5 font-medium text-gray-400">Launch offer · Lifetime Telegram access</div>
           </div>
           <div className="text-right shrink-0 mr-7">
@@ -1473,7 +1466,7 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
               </div>
 
               <div className="pt-3 mt-1" style={{ borderTop: `1px solid ${B1}12` }}>
-                <p className="text-center text-[10px] mb-2 font-medium" style={{ color: "#705454" }}>Upload screenshot to verify payment</p>
+                <p className="text-center text-[10px] mb-2 font-medium" style={{ color: "#705454" }}>Submit your payment screenshot for admin review</p>
                 <input type="file" id="ss-upload" className="hidden" accept="image/*" onChange={handleFileChange} />
                 <label htmlFor="ss-upload"
                   className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-bold text-sm cursor-pointer active:scale-95 transition-transform"
@@ -1484,25 +1477,25 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
             </>
           )}
 
-          {uploadState === 'verifying' && (
+          {uploadState === 'submitting' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
               <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: `${B1}12` }}>
                 <Loader2 className="w-8 h-8 animate-spin" style={{ color: B1 }} />
               </div>
-              <p className="font-bold text-base mb-1 text-gray-900">Verifying Payment</p>
-              <p className="text-xs font-medium text-gray-400">Please wait a moment...</p>
+              <p className="font-bold text-base mb-1 text-gray-900">Submitting Screenshot</p>
+              <p className="text-xs font-medium text-gray-400">Please wait while your screenshot is sent...</p>
             </motion.div>
           )}
 
-          {uploadState === 'success' && (
+          {uploadState === 'submitted' && (
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               transition={{ type: 'spring', stiffness: 200 }}
               className="text-center py-8">
               <div className="w-18 h-18 mx-auto rounded-2xl flex items-center justify-center mb-5 shadow-xl" style={{ background: HERO_SOLID, width: 72, height: 72 }}>
                 <CheckCircle className="w-10 h-10 text-white" />
               </div>
-              <p className="font-bold text-xl mb-1 text-gray-900">Payment Verified!</p>
-              <p className="text-sm font-medium" style={{ color: B1 }}>Redirecting to Telegram...</p>
+              <p className="font-bold text-xl mb-1 text-gray-900">Screenshot Submitted</p>
+              <p className="text-sm font-medium" style={{ color: B1 }}>Your membership and payment require admin confirmation before Smooch X access is shared.</p>
             </motion.div>
           )}
         </div>
