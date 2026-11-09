@@ -9,7 +9,6 @@ import {
   CreditCard, Send, Sun, Moon,
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import confetti from 'canvas-confetti';
 import toast, { Toaster } from 'react-hot-toast';
 import chatAvatar   from '../imports/photo_1_2026-09-07_13-39-47.jpg';
 import galleryImg1  from '../imports/Screenshot_2026_08_10_21_56_20_91_948cd9899890cbd5c2798760b2b95377.jpg';
@@ -19,8 +18,6 @@ import galleryImg4  from '../imports/Screenshot_2026_08_10_22_02_08_82_948cd9899
 import galleryImg5  from '../imports/shrutiofficial33742026_07_30_18_12_09480ecd4d_c145_474a_9f72_efe03c792136.jpg';
 import galleryImg6  from '../imports/RDT_20260727_235755726733947940243856.jpg';
 import adminPhoto   from '../imports/photo_2_2026-09-07_13-39-48.jpg';
-import faq4Audio from '../imports/faq4-bangalore-girls.mp3.mp3';
-import faq5Audio from '../imports/faq5-how-to-join.mp3.mp3';
 
 const ASSET_BASE = import.meta.env.BASE_URL;
 
@@ -113,8 +110,7 @@ const FEAT: { icon: React.ElementType; title: string; desc: string; badge?: stri
 
 const IMAGES   = [galleryImg1, galleryImg2, galleryImg3, galleryImg4, galleryImg5, galleryImg6];
 const VIDEOS   = ['https://player.vimeo.com/video/1182421154', 'https://player.vimeo.com/video/1182421156'];
-const QUESTIONS = ['Is this genuine?', 'How much is entry fee?', 'Refunds available?', 'Genuine Bangalore girls?', 'How to join?'];
-const AUDIO_FILES = [null, null, null, faq4Audio, faq5Audio];
+const QUESTIONS = ['Who can upgrade?', 'What benefits do I get?', 'How much is the upgrade?', 'What are higher group hours?', 'How do I upgrade?'];
 const UPGRADE_EXPERIENCES = [
   { title: 'More group time', before: 'Limited group hours', after: 'Higher group hours', detail: 'More time to participate in Smooch X conversations and activities.' },
   { title: 'Private pass included', before: 'Paid private pass', after: 'Free private pass', detail: 'Private pass access is included with the Smooch X upgrade.' },
@@ -1019,7 +1015,8 @@ function DesktopHero() {
 function DesktopFAQ() {
   const T = useT();
   const [open, setOpen] = useState<number | null>(0);
-  const items = UPGRADE_FAQS;  return (
+  const items = UPGRADE_FAQS;
+  return (
     <div>
       <div className="text-center mb-8">
         <h2 className="text-3xl font-extrabold mb-2" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>Upgrade FAQs</h2>
@@ -1055,8 +1052,6 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
   showPayment: boolean; onClosePayment: () => void; paymentType: 'full' | 'demo';
 }) {
   const T = useT();
-  const initials = (name: string) => name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-  const avatarColors = AVATAR_COLORS;
 
   return (
     <div className="min-h-screen w-full relative" style={{ ...dotGridStyle(T), fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -1161,7 +1156,7 @@ type Message = { id: string; sender: 'bot' | 'user'; type: 'text' | 'audio' | 'b
 function ChatOverlay({ onClose, onOpenPayment }: { onClose: () => void; onOpenPayment: () => void }) {
   const [messages, setMessages] = useState<Message[]>([{
     id: '1', sender: 'bot', type: 'text',
-    content: "Hi! I'm Komal. Tap a question to hear my answer!",
+    content: "Hi! I'm Komal. Ask me about upgrading from Datespot to Smooch X.",
     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
   }]);
   const [isTyping, setIsTyping] = useState(false);
@@ -1175,9 +1170,16 @@ function ChatOverlay({ onClose, onOpenPayment }: { onClose: () => void; onOpenPa
     setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
-      const msgs: Message[] = [{ id: (Date.now() + 1).toString(), sender: 'bot', type: 'audio', content: '',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), audioSrc: AUDIO_FILES[index] ?? undefined }];
-      if (q === 'How to join?') msgs.push({ id: (Date.now() + 2).toString(), sender: 'bot', type: 'button', content: 'Join now',
+      const answers = [
+        'Smooch X is an upgrade for existing Datespot members. Enter your Datespot membership number to begin.',
+        'Unlock VIP women profiles, a free private pass, free in-group exclusive content, premium services, WhatsApp access and higher group hours.',
+        `The launch offer is ${formatPrice(PRICING.mobile.amount)} (originally ${formatPrice(PRICING.mobile.original)}).`,
+        'Smooch X offers higher group hours than Datespot. Ask the admin for the current schedule.',
+        'Enter your membership number, pay using UPI and submit a screenshot. The team confirms payment and membership before sharing access.',
+      ];
+      const msgs: Message[] = [{ id: (Date.now() + 1).toString(), sender: 'bot', type: 'text', content: answers[index] ?? answers[0],
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }];
+      if (q === 'How do I upgrade?') msgs.push({ id: (Date.now() + 2).toString(), sender: 'bot', type: 'button', content: 'Upgrade now',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
       setMessages(prev => [...prev, ...msgs]);
     }, 700);
@@ -1216,7 +1218,7 @@ function ChatOverlay({ onClose, onOpenPayment }: { onClose: () => void; onOpenPa
                   <button onClick={() => { toast.success('Opening payment...'); onClose(); setTimeout(() => onOpenPayment(), 300); }}
                     className="px-5 py-2.5 rounded-2xl text-white font-bold text-xs active:scale-95 transition-transform shadow-md"
                     style={{ background: HERO_SOLID }}>
-                    Join for {formatPrice(PRICING.mobile.amount)}
+                    Upgrade for {formatPrice(PRICING.mobile.amount)}
                   </button>
                 ) : (
                   <div className="px-3.5 py-2.5 text-xs shadow-sm"
