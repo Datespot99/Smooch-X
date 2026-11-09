@@ -11,12 +11,6 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import toast, { Toaster } from 'react-hot-toast';
 import chatAvatar   from '../imports/photo_1_2026-09-07_13-39-47.jpg';
-import galleryImg1  from '../imports/Screenshot_2026_08_10_21_56_20_91_948cd9899890cbd5c2798760b2b95377.jpg';
-import galleryImg2  from '../imports/Screenshot_2026_08_10_21_56_34_83_948cd9899890cbd5c2798760b2b95377.jpg';
-import galleryImg3  from '../imports/Screenshot_2026_08_10_21_57_02_74_948cd9899890cbd5c2798760b2b95377.jpg';
-import galleryImg4  from '../imports/Screenshot_2026_08_10_22_02_08_82_948cd9899890cbd5c2798760b2b95377.jpg';
-import galleryImg5  from '../imports/shrutiofficial33742026_07_30_18_12_09480ecd4d_c145_474a_9f72_efe03c792136.jpg';
-import galleryImg6  from '../imports/RDT_20260727_235755726733947940243856.jpg';
 import adminPhoto   from '../imports/photo_2_2026-09-07_13-39-48.jpg';
 
 const ASSET_BASE = import.meta.env.BASE_URL;
@@ -108,7 +102,7 @@ const FEAT: { icon: React.ElementType; title: string; desc: string; badge?: stri
   { icon: Clock,         title: 'Higher Group Hours',         desc: 'More group access time than Datespot',                c1: '#D31414', c2: '#F30202', badge: 'MORE TIME' },
 ];
 
-const IMAGES   = [galleryImg1, galleryImg2, galleryImg3, galleryImg4, galleryImg5, galleryImg6];
+const IMAGES = ['/2.jpg', '/6.jpg', '/3.jpg', '/4.jpg', '/11.jpeg', '/9.jpeg', '/10.jpeg', '/8.jpeg'];
 const VIDEOS   = ['https://player.vimeo.com/video/1182421154', 'https://player.vimeo.com/video/1182421156'];
 const QUESTIONS = ['Who can upgrade?', 'What benefits do I get?', 'How much is the upgrade?', 'What are higher group hours?', 'How do I upgrade?'];
 const UPGRADE_EXPERIENCES = [
