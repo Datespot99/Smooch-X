@@ -19,10 +19,6 @@ import galleryImg4  from '../imports/Screenshot_2026_08_10_22_02_08_82_948cd9899
 import galleryImg5  from '../imports/shrutiofficial33742026_07_30_18_12_09480ecd4d_c145_474a_9f72_efe03c792136.jpg';
 import galleryImg6  from '../imports/RDT_20260727_235755726733947940243856.jpg';
 import adminPhoto   from '../imports/photo_2_2026-09-07_13-39-48.jpg';
-import proofPayment from '../imports/Screenshot_20260709_004939_PhonePe.jpg';
-import proofReview1 from '../imports/Screenshot_2024-09-29-20-43-34-268_com.facebook.katana.jpg';
-import proofReview2 from '../imports/Screenshot_2024_10_16_12_09_16_54_f598e1360c96b5a5aa16536c303cff92.jpg';
-import proofReview3 from '../imports/Screenshot_2025_02_04_11_05_01_43_f598e1360c96b5a5aa16536c303cff92.jpg';
 import faq4Audio from '../imports/faq4-bangalore-girls.mp3.mp3';
 import faq5Audio from '../imports/faq5-how-to-join.mp3.mp3';
 
@@ -614,101 +610,92 @@ function MeetAdmin() {
   );
 }
 
-// ─── Trust Proof ──────────────────────────────────────────────────────────────
-function TrustProof() {
+// ─── Smooch X vs Datespot ────────────────────────────────────────────────────
+function GroupComparison({ onJoin }: { onJoin: () => void }) {
   const T = useT();
-  const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const dragStart = useRef(0);
-
-  const proofCards = [
-    { img: proofPayment, label: 'Payment Confirmed', emoji: '✅', color: '#C90019',
-      review: REVIEWS[0] },
-    { img: proofReview1, label: 'Member Review',     emoji: '⭐', color: '#E60012',
-      review: REVIEWS[2] },
-    { img: proofReview2, label: 'Community Active',  emoji: '💬', color: B1,
-      review: REVIEWS[4] },
-    { img: proofReview3, label: 'Real Testimonial',  emoji: '🔥', color: '#C4162C',
-      review: REVIEWS[6] },
+  const rows = [
+    { feature: 'Telegram community', smooch: 'Smooch X group', datespot: 'Datespot group' },
+    { feature: 'Group chats', smooch: 'Included', datespot: 'Included' },
+    { feature: 'Voice calls', smooch: 'Included', datespot: 'Included' },
+    { feature: 'In-person meetups', smooch: 'Member-arranged', datespot: 'Member-arranged' },
+    { feature: '18+ content', smooch: 'Included', datespot: 'Included' },
   ];
-
-  useEffect(() => {
-    const t = setInterval(() => { setDirection(1); setCurrent(p => (p + 1) % proofCards.length); }, 3800);
-    return () => clearInterval(t);
-  }, []);
-
-  const goTo = (i: number, d: number) => { setDirection(d); setCurrent(i); };
-
-  const variants = {
-    enter: (d: number) => ({ x: d > 0 ? '55%' : '-55%', opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (d: number) => ({ x: d > 0 ? '-55%' : '55%', opacity: 0 }),
-  };
-
-  const c = proofCards[current];
-  const r = c.review;
-
+  const cellStyle = { borderTop: `1px solid ${T.BORDER}` };
   return (
-    <section className="py-3">
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <h2 className="font-extrabold text-lg" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>Proof It Works</h2>
-          <p className="text-[11px] font-semibold mt-0.5" style={{ color: T.MUTED }}>Real activity, real results</p>
+    <section className="py-3" aria-labelledby="group-comparison-heading">
+      <div className="mb-4">
+        <h2 id="group-comparison-heading" className="font-extrabold text-xl md:text-3xl tracking-tight" style={{ color: T.DARK }}>
+          Smooch X vs Datespot
+        </h2>
+        <p className="text-xs md:text-sm font-medium mt-1" style={{ color: T.MUTED }}>
+          Compare what each Telegram community includes
+        </p>
+      </div>
+      <div className="rounded-2xl md:rounded-3xl overflow-hidden" style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}` }}>
+        <table className="w-full table-fixed border-collapse text-left">
+          <colgroup>
+            <col style={{ width: '38%' }} />
+            <col style={{ width: '32%' }} />
+            <col style={{ width: '30%' }} />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col" className="px-2.5 sm:px-4 py-4 text-[10px] sm:text-xs font-bold uppercase tracking-wide" style={{ color: T.MUTED }}>
+                What you get
+              </th>
+              <th scope="col" className="px-2 sm:px-4 py-4 text-center" style={{ background: T.isDark ? '#43191F' : '#FFECEE' }}>
+                <span className="block text-sm sm:text-base font-black" style={{ color: T.isDark ? '#FF6472' : '#B80012' }}>Smooch X</span>
+                <span className="block text-[10px] sm:text-xs font-semibold mt-1" style={{ color: T.MUTED }}>Featured</span>
+              </th>
+              <th scope="col" className="px-2 sm:px-4 py-4 text-center">
+                <span className="block text-sm sm:text-base font-black" style={{ color: T.DARK }}>Datespot</span>
+                <span className="block text-[10px] sm:text-xs font-semibold mt-1" style={{ color: T.MUTED }}>Community</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(row => (
+              <tr key={row.feature}>
+                <th scope="row" className="px-2.5 sm:px-4 py-3.5 text-[11px] sm:text-sm font-bold leading-snug" style={{ ...cellStyle, color: T.DARK }}>
+                  {row.feature}
+                </th>
+                <td className="px-2 sm:px-4 py-3.5 text-center" style={{ ...cellStyle, background: T.isDark ? 'rgba(230,0,18,0.10)' : '#FFF4F5' }}>
+                  <span className="inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-bold leading-snug" style={{ color: T.DARK }}>
+                    <CheckCircle className="w-3.5 h-3.5 shrink-0" style={{ color: T.isDark ? '#FF6472' : B2 }} />
+                    {row.smooch}
+                  </span>
+                </td>
+                <td className="px-2 sm:px-4 py-3.5 text-center" style={cellStyle}>
+                  <span className="inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-semibold leading-snug" style={{ color: T.DARK }}>
+                    <CheckCircle className="w-3.5 h-3.5 shrink-0" style={{ color: T.MUTED }} />
+                    {row.datespot}
+                  </span>
+                </td>
+              </tr>
+            ))}
+            <tr>
+              <th scope="row" className="px-2.5 sm:px-4 py-4 text-[11px] sm:text-sm font-extrabold" style={{ ...cellStyle, color: T.DARK }}>Joining fee</th>
+              <td className="px-2 sm:px-4 py-4 text-center" style={{ ...cellStyle, background: T.isDark ? 'rgba(230,0,18,0.10)' : '#FFF4F5' }}>
+                <span className="block text-[10px] sm:text-xs line-through" style={{ color: T.MUTED }}>{formatPrice(PRICING.mobile.original)}</span>
+                <span className="block text-base sm:text-xl font-black" style={{ color: T.isDark ? '#FF6472' : B2 }}>{formatPrice(PRICING.mobile.amount)}</span>
+                <span className="block text-[9px] font-semibold" style={{ color: T.MUTED }}>Launch offer</span>
+              </td>
+              <td className="px-2 sm:px-4 py-4 text-center" style={cellStyle}>
+                <a href="https://datespot.in/" target="_blank" rel="noopener noreferrer" className="text-[10px] sm:text-xs font-bold underline underline-offset-2" style={{ color: T.DARK }}>
+                  See current price
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 p-3 sm:p-4" style={{ borderTop: `1px solid ${T.BORDER}` }}>
+          <button type="button" onClick={onJoin} className="rounded-xl py-3 px-2 text-xs sm:text-sm font-extrabold text-white flex items-center justify-center gap-1.5 transition-transform active:scale-[.98]" style={{ background: B1 }}>
+            Join Smooch X <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+          </button>
+          <a href="https://datespot.in/" target="_blank" rel="noopener noreferrer" className="rounded-xl py-3 px-2 text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5" style={{ color: T.DARK, border: `1px solid ${T.BORDER}` }}>
+            View Datespot <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+          </a>
         </div>
-        <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ background: HERO_GRAD }}>
-          {current + 1} / {proofCards.length}
-        </span>
-      </div>
-
-      <div className="relative overflow-hidden rounded-2xl select-none"
-        onTouchStart={e => { dragStart.current = e.touches[0].clientX; }}
-        onTouchEnd={e => { const dx = dragStart.current - e.changedTouches[0].clientX; if (Math.abs(dx) > 40) dx > 0 ? goTo((current + 1) % proofCards.length, 1) : goTo((current - 1 + proofCards.length) % proofCards.length, -1); }}>
-
-        <AnimatePresence custom={direction} mode="popLayout">
-          <motion.div key={current} custom={direction} variants={variants}
-            initial="enter" animate="center" exit="exit"
-            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-            className="w-full rounded-2xl overflow-hidden"
-            style={{ background: T.CARD_BG, border: `1px solid ${c.color}25`, boxShadow: T.isDark ? 'none' : '0 2px 12px rgba(0,0,0,0.07)' }}>
-
-            {/* Real screenshot — cropped to fixed height, blurred for privacy */}
-            <div className="relative overflow-hidden" style={{ height: 110 }}>
-              <img src={c.img} alt={c.label}
-                className="w-full h-full object-cover object-top" />
-              <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.2)' }} />
-              <div className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full text-white"
-                style={{ background: c.color, fontSize: 9, fontWeight: 800 }}>
-                <span>{c.emoji}</span><span>{c.label}</span>
-              </div>
-            </div>
-
-            {/* Quote */}
-            <div className="px-3.5 py-3">
-              <div className="flex gap-0.5 mb-1.5">
-                {[...Array(5)].map((_, j) => <Star key={j} className="w-2.5 h-2.5 fill-current" style={{ color: '#E60012' }} />)}
-              </div>
-              <p className="text-[11.5px] leading-relaxed font-medium mb-2" style={{ color: T.QUOTE }}>"{r.text}"</p>
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full flex items-center justify-center text-white font-black text-[8px] shrink-0"
-                  style={{ background: HERO_GRAD }}>
-                  {r.name.split(' ').map((w: string) => w[0]).join('').slice(0, 2)}
-                </div>
-                <span className="text-[10px] font-bold" style={{ color: T.DARK }}>{r.name}</span>
-                <span className="text-[9px] font-semibold flex items-center gap-0.5 ml-auto" style={{ color: T.MUTED }}>
-                  <MapPin className="w-2 h-2" />{r.area}
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      <div className="flex justify-center gap-1.5 mt-2.5">
-        {proofCards.map((_, i) => (
-          <button key={i} onClick={() => goTo(i, i > current ? 1 : -1)}
-            className="rounded-full transition-all duration-300"
-            style={{ width: i === current ? 16 : 4, height: 4, background: i === current ? B1 : (T.isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)') }} />
-        ))}
       </div>
     </section>
   );
@@ -889,8 +876,8 @@ function MobileApp() {
         {/* FAQ */}
         <FAQ />
 
-        {/* Trust Proof — below payment section */}
-        <TrustProof />
+        {/* Smooch X and Datespot comparison */}
+        <GroupComparison onJoin={() => handleJoin('full')} />
 
       </div>
 
@@ -1225,9 +1212,9 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
         <WhyTrust />
       </section>
 
-      {/* Proof It Works */}
-      <section className="max-w-3xl mx-auto px-8 pb-12">
-        <TrustProof />
+      {/* Smooch X and Datespot comparison */}
+      <section className="max-w-4xl mx-auto px-8 pb-12">
+        <GroupComparison onJoin={() => onOpenPayment('full')} />
       </section>
 
       {/* Reviews grid */}
