@@ -112,12 +112,12 @@ const IMAGES   = [galleryImg1, galleryImg2, galleryImg3, galleryImg4, galleryImg
 const VIDEOS   = ['https://player.vimeo.com/video/1182421154', 'https://player.vimeo.com/video/1182421156'];
 const QUESTIONS = ['Who can upgrade?', 'What benefits do I get?', 'How much is the upgrade?', 'What are higher group hours?', 'How do I upgrade?'];
 const UPGRADE_EXPERIENCES = [
-  { title: 'More group time', before: 'Limited group hours', after: 'Higher group hours', detail: 'More time to participate in Smooch X conversations and activities.' },
-  { title: 'Private pass included', before: 'Paid private pass', after: 'Free private pass', detail: 'Private pass access is included with the Smooch X upgrade.' },
-  { title: 'Content without add-on fees', before: 'Paid exclusive content', after: 'Free in-group exclusive content', detail: 'In-group exclusive content without a separate content charge.' },
-  { title: 'VIP profiles', before: 'Limited women profiles', after: 'VIP women profiles', detail: 'Access to the VIP women profile selection.' },
-  { title: 'More ways to connect', before: 'No WhatsApp access', after: 'WhatsApp access', detail: 'WhatsApp access becomes part of the upgraded membership.' },
-  { title: 'Premium options', before: 'Standard group benefits', after: 'Premium services', detail: 'Explore the premium services available in Smooch X.' },
+  { title: 'More group time', before: 'Limited group hours', after: 'Higher group hours', detail: "I had limited group hours in Datespot. Smooch X gives me more time in the group." },
+  { title: 'Private pass included', before: 'Paid private pass', after: 'Free private pass', detail: "I used to pay separately for a private pass. With Smooch X, it's included." },
+  { title: 'Content without add-on fees', before: 'Paid exclusive content', after: 'Free in-group exclusive content', detail: "Exclusive content was an extra cost before. Now it's included inside Smooch X." },
+  { title: 'VIP profiles', before: 'Limited women profiles', after: 'VIP women profiles', detail: "I upgraded from limited women profiles to the VIP profile selection." },
+  { title: 'More ways to connect', before: 'No WhatsApp access', after: 'WhatsApp access', detail: "The Smooch X upgrade also gives me WhatsApp access." },
+  { title: 'Premium options', before: 'Standard group benefits', after: 'Premium services', detail: "I can now explore the premium services that weren't part of my Datespot membership." },
 ];
 
 function UpgradeExperiences() {
@@ -146,7 +146,8 @@ function UpgradeExperiences() {
               <span className="block text-[10px] font-black uppercase mb-1" style={{ color: T.isDark ? '#FF9999' : B2 }}>Smooch X</span>
               <span className="text-xs sm:text-sm font-extrabold" style={{ color: T.DARK }}>{story.after}</span>
             </div>
-            <p className="text-xs leading-relaxed" style={{ color: T.MUTED }}>{story.detail}</p>
+            <p className="text-xs font-semibold leading-relaxed" style={{ color: T.DARK }}>&ldquo;{story.detail}&rdquo;</p>
+            <span className="block text-[10px] font-medium mt-2" style={{ color: T.MUTED }}>Illustrative member perspective</span>
           </article>
         ))}
       </div>
