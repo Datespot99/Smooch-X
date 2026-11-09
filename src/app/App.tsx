@@ -696,7 +696,7 @@ function MobileApp() {
             <Sparkles className="w-3 h-3" /> Exclusive upgrade for Datespot members
           </div>
           <h1 className="text-[32px] leading-[1.15] font-black tracking-tight mb-3" style={{ color: T.DARK }}>
-            Ready to <span style={{ color: B1 }}>upgrade from Datespot?</span>
+            Upgrade to <span style={{ color: B1 }}>Smooch X</span>
           </h1>
           <p className="text-base font-bold leading-relaxed" style={{ color: T.DARK }}>
             Meet Smooch X: VIP women profiles, free private pass, exclusive content, premium services and WhatsApp access.
@@ -891,7 +891,7 @@ function DesktopHero() {
           </div>
           <h1 className="font-black leading-[1.1] mb-3"
             style={{ color: T.DARK, fontSize: 'clamp(36px,4.1vw,60px)', letterSpacing: '-0.05em' }}>
-            Upgrade from Datespot to <span style={{ color: B1 }}>Smooch X.</span>
+            Upgrade to <span style={{ color: B1 }}>Smooch X</span>
           </h1>
           <p className="text-xl lg:text-2xl font-bold mb-5" style={{ color: T.DARK }}>
             Unlock the premium dating group experience.
