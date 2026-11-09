@@ -29,11 +29,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Build for GitHub Pages
-        env:
-          PAGES_BASE_PATH: /Smooch-X/
         run: pnpm build
-      - name: Add SPA fallback
-        run: cp dist/index.html dist/404.html
+      - name: Configure custom domain and SPA fallback
+        run: |
+          cp dist/index.html dist/404.html
+          cp CNAME dist/CNAME
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
