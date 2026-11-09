@@ -280,185 +280,94 @@ function GroupPreviewSlider({ images, mobile = false }: { images: string[]; mobi
   );
 }
 
-// ─── Lead Modal ───────────────────────────────────────────────────────────────
+// ─── Premium membership-number gate ───────────────────────────────────────────
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyZ4CDmSSpm80A-xyX-2f3p97vtAX_t6ny7bbUZiJPF9-apBF5DUmOAc3CjXCJ-6teo5A/exec';
 
 function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void; onComplete: () => void; gate?: boolean }) {
   const T = useT();
-  const [name, setName]       = useState('');
-  const [phone, setPhone]     = useState('');
+  const [membershipNumber, setMembershipNumber] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
-  const [galleryIndex, setGalleryIndex] = useState(0);
-
-  // Cycle every photo through the desktop background cards.
-  useEffect(() => {
-    const timer = window.setInterval(() => setGalleryIndex(i => (i + 1) % 10), 3000);
-    return () => window.clearInterval(timer);
-  }, []);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!name.trim()) { setError('Please enter your full name.'); return; }
-    if (!/^[6-9]\d{9}$/.test(phone.trim())) { setError('Enter a valid 10-digit Indian mobile number.'); return; }
+    const number = membershipNumber.trim().toUpperCase();
+    if (!/^[A-Z0-9][A-Z0-9_-]{0,39}$/.test(number)) {
+      setError('Enter your Datespot membership number using letters, numbers or hyphens.');
+      return;
+    }
     setLoading(true);
     try {
-      const params = new URLSearchParams({ name: name.trim(), phone: phone.trim() });
-      await fetch(`${SHEET_URL}?${params.toString()}`, { mode: 'no-cors' });
-      localStorage.setItem('sx_lead_submitted', '1');
-      localStorage.setItem('sx_lead_name', name.trim());
-      localStorage.setItem('sx_lead_phone', phone.trim());
+      // The opaque lead request does not confirm membership status.
+      await fetch(`${SHEET_URL}?${new URLSearchParams({ membershipNumber: number })}`, { mode: 'no-cors' });
+      localStorage.setItem('sx_membership_number', number);
+      localStorage.setItem('sx_membership_entered', '1');
       onComplete();
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError('Could not continue. Check your connection and try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const portraits = [
-    { side: 'left', near: false },
-    { side: 'left', near: true },
-    { side: 'right', near: true },
-    { side: 'right', near: false },
-  ] as const;
-
-  // Ten original photos are arranged as a 5-column × 2-row WebP sprite.
-  // Each photo has 240 × 320 pixels, replacing the old tiny four-photo image.
-  const photoStyle = (imageIndex: number): React.CSSProperties => ({
-    backgroundImage: `url('${ASSET_BASE}signup-gallery.webp')`,
-    backgroundSize: '500% 200%',
-    backgroundPosition: `${(imageIndex % 5) * 25}% ${Math.floor(imageIndex / 5) * 100}%`,
-    backgroundRepeat: 'no-repeat',
-  });
-
-  const photoIndexes = Array.from({ length: 10 }, (_, index) => index);
-
   return (
-    <div className={`fixed inset-0 z-[999] flex items-center justify-center overflow-y-auto overflow-x-hidden px-4 py-3 sm:px-5 ${gate ? '' : 'bg-black/70'}`}
-      style={{
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-        backgroundColor: T.PAGE_BG,
-        backgroundImage: `radial-gradient(ellipse 58% 53% at 50% 50%,rgba(243,2,2,${T.isDark ? '.18' : '.09'}),transparent 80%),radial-gradient(circle,rgba(243,2,2,${T.isDark ? '.15' : '.18'}) 1px,transparent 1px)`,
-        backgroundSize: 'auto, 22px 22px',
-      }}>
-      <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={gate ? undefined : onClose} />
-
-      {/* Desktop: angled background portraits rotate through all ten images. */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden hidden sm:block" aria-hidden="true">
-        {portraits.map((photo, i) => (
-          <div key={i}
-            className="absolute rounded-[24px] overflow-hidden"
-            style={{
-              width: photo.near ? 'clamp(100px,17vw,210px)' : 'clamp(90px,14vw,175px)',
-              height: photo.near ? 'clamp(178px,26vw,315px)' : 'clamp(155px,23vw,275px)',
-              top: photo.near ? 'calc(50% - 160px)' : 'calc(50% - 125px)',
-              left: photo.side === 'left' ? (photo.near ? 'calc(50% - clamp(190px, 31vw, 410px))' : 'calc(50% - clamp(300px, 42vw, 575px))') : undefined,
-              right: photo.side === 'right' ? (photo.near ? 'calc(50% - clamp(190px, 31vw, 410px))' : 'calc(50% - clamp(300px, 42vw, 575px))') : undefined,
-              transform: `rotate(${photo.side === 'left' ? (photo.near ? -11 : -17) : (photo.near ? 11 : 17)}deg)`,
-              border: '1px solid rgba(243,2,2,.55)',
-              boxShadow: '0 8px 35px rgba(8,64,32,.22)',
-              backgroundColor: '#1C0F0F',
-            }}>
-            <AnimatePresence mode="wait">
-              <motion.div key={(galleryIndex + i * 2) % 10}
-                initial={{ opacity: 0 }} animate={{ opacity: .75 }} exit={{ opacity: 0 }}
-                transition={{ duration: .6 }}
-                className="absolute inset-0"
-                style={photoStyle((galleryIndex + i * 2) % 10)} />
-            </AnimatePresence>
-          </div>
-        ))}
-      </div>
-      <style>{`
-        @keyframes smooch-xPhotoLoop {
-          from { transform: translate3d(0, 0, 0); }
-          to { transform: translate3d(-50%, 0, 0); }
-        }
-        .smooch-x-photo-loop { animation: smooch-xPhotoLoop 42s linear infinite; will-change: transform; }
-        @media (prefers-reduced-motion: reduce) { .smooch-x-photo-loop { animation: none; } }
-      `}</style>
-
-      <div className="relative z-10 w-full max-w-[440px] max-h-[96dvh] overflow-y-auto sm:max-h-none sm:overflow-visible flex flex-col items-center gap-3 sm:block">
-        {/* Mobile: the full ten-photo gallery scrolls seamlessly on an infinite loop. */}
-        <div className="sm:hidden w-full h-[136px] shrink-0 overflow-hidden pointer-events-none" aria-hidden="true"
-          style={{ WebkitMaskImage: 'linear-gradient(90deg, transparent, black 7%, black 93%, transparent)',
-            maskImage: 'linear-gradient(90deg, transparent, black 7%, black 93%, transparent)' }}>
-          <div className="smooch-x-photo-loop inline-flex w-max h-full items-center">
-            {[0, 1].map(repeat => (
-              <div key={repeat} className="flex shrink-0 h-full items-center gap-2 pr-2">
-                {photoIndexes.map(i => (
-                  <div key={i} className="shrink-0 rounded-xl"
-                    style={{
-                      width: 'clamp(74px,20vw,92px)',
-                      height: 'clamp(99px,26.67vw,123px)',
-                      transform: `rotate(${[-5, -2, 2, 5, -3, 3, -4, 4, -2, 2][i]}deg)`,
-                      border: '1px solid rgba(243,2,2,.65)',
-                      boxShadow: '0 7px 20px rgba(0,0,0,.28)',
-                      ...photoStyle(i),
-                    }} />
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-
+    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+      style={{ ...dotGridStyle(T), fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      {!gate && <div className="absolute inset-0" onClick={onClose} />}
       <motion.div
-        initial={{ opacity: 0, y: 22, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 12, scale: 0.97 }}
-        transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
-        role="dialog" aria-modal="true" aria-label="Enter your details"
-        className="relative w-full max-w-[440px] rounded-[22px] sm:rounded-[24px] overflow-hidden shrink-0"
-        style={{ background: T.CARD_BG, border: '1px solid rgba(243,2,2,.55)', boxShadow: T.isDark ? '0 28px 80px rgba(0,0,0,.55)' : '0 20px 60px rgba(90,10,20,.13)' }}>
-        {!gate && <button onClick={onClose} aria-label="Close" className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10">
-          <X className="w-4 h-4" style={{ color: '#C4ADAD' }} />
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
+        transition={{ duration: .25 }}
+        role="dialog" aria-modal="true" aria-label="Enter your Datespot membership number"
+        className="relative z-10 w-full max-w-[440px] rounded-[24px] overflow-hidden"
+        style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}`, boxShadow: T.isDark ? '0 24px 64px rgba(0,0,0,.55)' : '0 24px 64px rgba(0,0,0,.10)' }}>
+        <div className="h-1" style={{ background: B1 }} />
+        {!gate && <button type="button" onClick={onClose} aria-label="Close" className="absolute top-5 right-5 p-1.5 rounded-lg">
+          <X className="w-4 h-4" style={{ color: T.MUTED }} />
         </button>}
-        <div className="px-5 py-5 sm:px-9 sm:py-9">
-          <div className="flex justify-center items-center gap-2 mb-4 sm:mb-7">
-            <img src={`${ASSET_BASE}smooch-x-logo.svg`} alt="" className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover" />
-            <span className="font-extrabold text-xl tracking-tight" style={{ color: T.DARK }}>Smooch X</span>
+        <div className="px-6 py-9 sm:px-9 sm:py-11">
+          <div className="flex justify-center items-center gap-3 mb-8">
+            <img src={`${ASSET_BASE}smooch-x-logo.svg`} alt="" className="w-11 h-11 rounded-xl object-cover" />
+            <span className="font-black text-xl tracking-tight" style={{ color: T.DARK }}>Smooch X</span>
           </div>
-          <div className="text-center mb-5 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight mb-1.5" style={{ color: T.DARK }}>Enter Your Details</h2>
-            <p className="text-xs sm:text-sm" style={{ color: T.MUTED }}>Join now and get instant access.</p>
+          <div className="text-center mb-7">
+            <span className="inline-block rounded-full px-3 py-1.5 text-[10px] font-black uppercase tracking-widest mb-4"
+              style={{ color: T.isDark ? '#FF9999' : B2, background: T.isDark ? '#421818' : '#FFF0F0' }}>
+              Exclusive Datespot Member Upgrade
+            </span>
+            <h1 className="text-2xl sm:text-[28px] leading-tight font-black tracking-tight mb-3" style={{ color: T.DARK }}>
+              Unlock your Smooch X upgrade
+            </h1>
+            <p className="text-sm leading-relaxed" style={{ color: T.MUTED }}>
+              Enter your Datespot membership number to continue to the premium upgrade.
+            </p>
           </div>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 sm:gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <label htmlFor="ds-signup-name" className="block text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: T.MUTED }}>Full Name</label>
-              <input id="ds-signup-name" type="text" autoComplete="name" placeholder="Enter your full name"
-                value={name} onChange={e => setName(e.target.value)}
-                className="w-full rounded-xl px-4 py-3 sm:py-3.5 outline-none text-sm font-semibold transition-all"
-                style={{ background: T.isDark ? '#100909' : '#FFF8F8', border: `1px solid ${name ? B1 : (T.isDark ? '#522222' : '#F8D0D0')}`, color: T.DARK, caretColor: B2 }} />
+              <label htmlFor="sx-membership-number" className="block text-xs font-bold mb-2" style={{ color: T.DARK }}>
+                Datespot Membership Number
+              </label>
+              <input id="sx-membership-number" type="text" autoComplete="off" autoCapitalize="characters"
+                spellCheck={false} required maxLength={40}
+                placeholder="Enter your membership number" value={membershipNumber}
+                onChange={e => setMembershipNumber(e.target.value)}
+                className="w-full rounded-xl px-4 py-3.5 outline-none text-sm font-semibold focus-visible:ring-2"
+                style={{ background: T.isDark ? '#100909' : '#FFF8F8', color: T.DARK, border: `1px solid ${membershipNumber ? B1 : T.BORDER}`, caretColor: B1 }} />
+              <p className="text-[11px] mt-2" style={{ color: T.MUTED }}>Use the number provided with your Datespot membership.</p>
             </div>
-            <div>
-              <label htmlFor="ds-signup-phone" className="block text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: T.MUTED }}>Mobile Number</label>
-              <div className="flex items-center rounded-xl overflow-hidden"
-                style={{ background: T.isDark ? '#100909' : '#FFF8F8', border: `1px solid ${phone ? B1 : (T.isDark ? '#522222' : '#F8D0D0')}` }}>
-                <span className="px-3.5 py-3 sm:py-3.5 text-sm font-bold shrink-0" style={{ color: T.MUTED, borderRight: `1px solid ${T.isDark ? '#522222' : '#F8D0D0'}` }}>+91</span>
-                <input id="ds-signup-phone" type="tel" inputMode="numeric" autoComplete="tel-national"
-                  placeholder="Enter 10-digit number" value={phone} maxLength={10}
-                  onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
-                  className="flex-1 min-w-0 px-3.5 py-3 sm:py-3.5 outline-none text-sm font-semibold bg-transparent"
-                  style={{ color: T.DARK, caretColor: B2 }} />
-              </div>
-            </div>
-            {error && (
-              <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }}
-                className="text-xs font-semibold text-red-300 bg-red-950/30 px-3 py-2 rounded-lg"
-                style={{ border: '1px solid rgba(239,68,68,.3)' }}>{error}</motion.p>
-            )}
+            {error && <p role="alert" className="text-xs font-semibold rounded-lg px-3 py-2"
+              style={{ color: T.isDark ? '#FF9999' : '#A80000', background: T.isDark ? '#421818' : '#FFF0F0' }}>{error}</p>}
             <button type="submit" disabled={loading}
-              className="w-full rounded-xl py-3 sm:py-3.5 mt-1 font-extrabold text-sm flex items-center justify-center gap-2 transition-transform active:scale-[.98] disabled:opacity-70"
-              style={{ background: B1, color: '#FFFFFF', boxShadow: '0 6px 22px rgba(243,2,2,.25)' }}>
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><span>{gate ? 'Continue' : 'Continue to Payment'}</span><ArrowRight className="w-4 h-4" /></>}
+              className="w-full rounded-xl py-3.5 font-extrabold text-sm flex items-center justify-center gap-2 disabled:opacity-70"
+              style={{ background: HERO_SOLID, color: '#FFFFFF' }}>
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continue to Smooch X <ArrowRight className="w-4 h-4" /></>}
             </button>
-            <p className="text-center text-[11px] font-medium" style={{ color: T.MUTED }}>🔒 Your info is private &amp; never shared</p>
+            <p className="text-center text-[11px] leading-relaxed" style={{ color: T.MUTED }}>
+              Membership and payment are reviewed before Smooch X access is granted.
+            </p>
           </form>
         </div>
       </motion.div>
-      </div>
     </div>
   );
 }
@@ -775,7 +684,7 @@ function MobileApp() {
 
   const handleJoin = (type: 'full' | 'demo') => {
     setPaymentType(type);
-    if (localStorage.getItem('sx_lead_submitted') === '1') {
+    if (localStorage.getItem('sx_membership_entered') === '1') {
       setShowPayment(true);
     } else {
       setShowLead(true);
@@ -919,16 +828,11 @@ export default function App() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const [entered, setEntered] = useState(() => localStorage.getItem('sx_lead_submitted') === '1');
+  const [entered, setEntered] = useState(() => localStorage.getItem('sx_membership_entered') === '1');
   if (!entered) {
     return (
       <ThemeProvider>
-        <div className="min-h-screen w-full relative" style={{
-          backgroundColor: '#000000',
-          backgroundImage:
-            'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(243,2,2,0.18), transparent 70%), radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1.2px)',
-          backgroundSize: '100% 100%, 24px 24px',
-        }}>
+        <div className="min-h-screen w-full relative" style={{ background: '#090909' }}>
           <LeadModal gate onComplete={() => setEntered(true)} />
         </div>
       </ThemeProvider>
@@ -950,7 +854,7 @@ function DesktopWrapper() {
   const [paymentType, setPaymentType] = useState<'full' | 'demo'>('full');
   const handleJoin = (type: 'full' | 'demo') => {
     setPaymentType(type);
-    if (localStorage.getItem('sx_lead_submitted') === '1') {
+    if (localStorage.getItem('sx_membership_entered') === '1') {
       setShowPayment(true);
     } else {
       setShowLead(true);
