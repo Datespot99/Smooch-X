@@ -227,7 +227,7 @@ function GroupPreviewSlider({ images, mobile = false }: { images: string[]; mobi
 }
 
 // ─── Premium membership-number gate ───────────────────────────────────────────
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyZ4CDmSSpm80A-xyX-2f3p97vtAX_t6ny7bbUZiJPF9-apBF5DUmOAc3CjXCJ-6teo5A/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzXWuz5VWvNw0yOVSodhoWa1NgChGKpccoIrlme7la2AJ5Ckl_16ydjIENJ8lfhwZpn/exec';
 
 function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void; onComplete: () => void; gate?: boolean }) {
   const T = useT();
