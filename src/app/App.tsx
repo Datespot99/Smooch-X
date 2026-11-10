@@ -105,51 +105,6 @@ const FEAT: { icon: React.ElementType; title: string; desc: string; badge?: stri
 const IMAGES = ['/2.jpg', '/6.jpg', '/3.jpg', '/4.jpg', '/11.jpeg', '/9.jpeg', '/10.jpeg', '/8.jpeg'];
 const VIDEOS   = ['https://player.vimeo.com/video/1182421154', 'https://player.vimeo.com/video/1182421156'];
 const QUESTIONS = ['Who can upgrade?', 'What benefits do I get?', 'How much is the upgrade?', 'What are higher group hours?', 'How do I upgrade?'];
-const UPGRADE_EXPERIENCES = [
-  { title: 'More group time', before: 'Limited group hours', after: 'Higher group hours', detail: "I had limited group hours in Datespot. Smooch X gives me more time in the group." },
-  { title: 'Private pass included', before: 'Paid private pass', after: 'Free private pass', detail: "I used to pay separately for a private pass. With Smooch X, it's included." },
-  { title: 'Content without add-on fees', before: 'Paid exclusive content', after: 'Free in-group exclusive content', detail: "Exclusive content was an extra cost before. Now it's included inside Smooch X." },
-  { title: 'VIP profiles', before: 'Limited women profiles', after: 'VIP women profiles', detail: "I upgraded from limited women profiles to the VIP profile selection." },
-  { title: 'More ways to connect', before: 'No WhatsApp access', after: 'WhatsApp access', detail: "The Smooch X upgrade also gives me WhatsApp access." },
-  { title: 'Premium options', before: 'Standard group benefits', after: 'Premium services', detail: "I can now explore the premium services that weren't part of my Datespot membership." },
-];
-
-function UpgradeExperiences() {
-  const T = useT();
-  return (
-    <section className="py-6" aria-labelledby="upgrade-experiences-heading">
-      <div className="mb-5">
-        <span className="text-[10px] sm:text-xs uppercase tracking-widest font-extrabold" style={{ color: T.isDark ? '#FF9999' : B2 }}>From Datespot to Smooch X</span>
-        <h2 id="upgrade-experiences-heading" className="font-black text-xl md:text-3xl mt-1" style={{ color: T.DARK }}>The upgrade experience</h2>
-        <p className="text-xs md:text-sm font-medium mt-1" style={{ color: T.MUTED }}>See how your membership benefits change after upgrading.</p>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {UPGRADE_EXPERIENCES.map((story, i) => (
-          <article key={story.title} className="rounded-2xl p-4 sm:p-5"
-            style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}`, borderTop: `3px solid ${B1}` }}>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-black uppercase tracking-wider" style={{ color: T.isDark ? '#FF9999' : B2 }}>Upgrade benefit {String(i + 1).padStart(2, '0')}</span>
-              <Sparkles className="w-4 h-4" style={{ color: B1 }} />
-            </div>
-            <h3 className="font-extrabold text-sm sm:text-base mb-3" style={{ color: T.DARK }}>{story.title}</h3>
-            <div className="rounded-xl p-3 mb-2" style={{ background: T.isDark ? '#261414' : '#FFF2F2' }}>
-              <span className="block text-[10px] font-bold uppercase mb-1" style={{ color: T.MUTED }}>Datespot</span>
-              <span className="text-xs sm:text-sm font-semibold" style={{ color: T.MUTED }}>{story.before}</span>
-            </div>
-            <div className="rounded-xl p-3 mb-3" style={{ background: T.isDark ? '#421818' : '#FFE2E2' }}>
-              <span className="block text-[10px] font-black uppercase mb-1" style={{ color: T.isDark ? '#FF9999' : B2 }}>Smooch X</span>
-              <span className="text-xs sm:text-sm font-extrabold" style={{ color: T.DARK }}>{story.after}</span>
-            </div>
-            <p className="text-xs font-semibold leading-relaxed" style={{ color: T.DARK }}>&ldquo;{story.detail}&rdquo;</p>
-            <span className="block text-[10px] font-medium mt-2" style={{ color: T.MUTED }}>Illustrative member perspective</span>
-          </article>
-        ))}
-      </div>
-      <p className="text-[10px] font-medium mt-3" style={{ color: T.MUTED }}>Illustrative benefit comparisons, not customer testimonials.</p>
-    </section>
-  );
-}
-
 // ─── Glassmorphic blob ────────────────────────────────────────────────────────
 function GlassBlob({ size, top, left, right, bottom, rotate = 0, rx = '62% 38% 70% 30% / 45% 55% 45% 55%' }: {
   size: number; top?: string | number; left?: string | number;
@@ -189,8 +144,8 @@ function GroupPreviewSlider({ images, mobile = false }: { images: string[]; mobi
 
   if (mobile) {
     return (
-      <section className="py-6">
-        <div className="flex items-center justify-between mb-4">
+      <section className="py-3">
+        <div className="flex items-center justify-between mb-3">
           <div>
             <h2 className="font-extrabold text-xl" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>Group Preview</h2>
             <p className="text-xs font-semibold mt-0.5" style={{ color: T.MUTED }}>Swipe for screenshots </p>
@@ -200,7 +155,7 @@ function GroupPreviewSlider({ images, mobile = false }: { images: string[]; mobi
           </span>
         </div>
         <div className="flex justify-center">
-          <div className="relative" style={{ width: '72vw', maxWidth: 240 }}>
+          <div className="relative" style={{ width: 'min(58vw, 210px)' }}>
             {/* Glow halo */}
             <div className="absolute inset-0 rounded-3xl blur-2xl opacity-30 scale-95" style={{ background: HERO_SOLID }} />
             <div
@@ -416,7 +371,7 @@ function StatsSection() {
     { ref: s4.ref, val: s4.val, suffix: '%', label: 'Positive Reviews', c1: '#F30202', c2: '#FF9999' },
   ];
   return (
-    <section className="py-5">
+    <section className="py-2">
       <div className="grid grid-cols-2 gap-2.5">
         {stats.map((s, i) => (
           null
@@ -508,13 +463,13 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
   const borderTop = `1px solid ${T.BORDER}`;
   const premiumBg = T.isDark ? 'rgba(243,2,2,0.11)' : '#FFF1F1';
   return (
-    <section className="py-3" aria-labelledby="group-comparison-heading">
+    <section className="py-2" aria-labelledby="group-comparison-heading">
       <div className="mb-5">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-extrabold uppercase tracking-wider mb-3"
           style={{ color: T.isDark ? '#FF9999' : B2, background: premiumBg, border: `1px solid ${T.BORDER}` }}>
           <Sparkles className="w-3.5 h-3.5" /> The Datespot upgrade
         </span>
-        <h2 id="group-comparison-heading" className="font-black text-2xl md:text-4xl tracking-tight leading-tight" style={{ color: T.DARK }}>
+        <h2 id="group-comparison-heading" className="font-black text-xl md:text-4xl tracking-tight leading-tight" style={{ color: T.DARK }}>
           Datespot is the start. <span style={{ color: T.isDark ? '#FF7373' : B2 }}>Smooch X is the upgrade.</span>
         </h2>
         <p className="text-xs md:text-base font-medium mt-2" style={{ color: T.MUTED }}>
@@ -530,14 +485,14 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
           </colgroup>
           <thead>
             <tr>
-              <th scope="col" className="px-2 sm:px-4 py-4 text-[10px] sm:text-xs font-bold uppercase tracking-wide" style={{ color: T.MUTED }}>
+              <th scope="col" className="px-1.5 sm:px-4 py-2.5 md:py-4 text-[10px] sm:text-xs font-bold uppercase tracking-wide" style={{ color: T.MUTED }}>
                 Benefits
               </th>
-              <th scope="col" className="px-2 sm:px-4 py-4 text-center" style={{ background: T.isDark ? '#421818' : '#FFE2E2' }}>
+              <th scope="col" className="px-1.5 sm:px-4 py-2.5 md:py-4 text-center" style={{ background: T.isDark ? '#421818' : '#FFE2E2' }}>
                 <span className="block text-sm sm:text-lg font-black" style={{ color: T.isDark ? '#FF9999' : B2 }}>Smooch X</span>
                 <span className="block text-[9px] sm:text-xs font-extrabold uppercase tracking-wide mt-1" style={{ color: T.isDark ? '#FF9999' : B2 }}>Upgrade</span>
               </th>
-              <th scope="col" className="px-2 sm:px-4 py-4 text-center">
+              <th scope="col" className="px-1.5 sm:px-4 py-2.5 md:py-4 text-center">
                 <span className="block text-sm sm:text-lg font-black" style={{ color: T.DARK }}>Datespot</span>
                 <span className="block text-[9px] sm:text-xs font-semibold mt-1" style={{ color: T.MUTED }}>Basic group</span>
               </th>
@@ -546,16 +501,16 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
           <tbody>
             {rows.map(row => (
               <tr key={row.feature}>
-                <th scope="row" className="px-2 sm:px-4 py-4 text-[10px] sm:text-sm font-bold leading-snug" style={{ borderTop, color: T.DARK }}>
+                <th scope="row" className="px-1.5 sm:px-4 py-2.5 md:py-4 text-[10px] sm:text-sm font-bold leading-snug" style={{ borderTop, color: T.DARK }}>
                   {row.feature}
                 </th>
-                <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop, background: premiumBg }}>
+                <td className="px-1.5 sm:px-4 py-2.5 md:py-4 text-center" style={{ borderTop, background: premiumBg }}>
                   <span className="inline-flex items-center justify-center gap-1 sm:gap-2 text-[10px] sm:text-sm font-extrabold leading-snug" style={{ color: T.DARK }}>
                     <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" style={{ color: T.isDark ? '#FF9999' : B2 }} />
                     {row.smooch}
                   </span>
                 </td>
-                <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop }}>
+                <td className="px-1.5 sm:px-4 py-2.5 md:py-4 text-center" style={{ borderTop }}>
                   <span className="text-[10px] sm:text-sm font-medium leading-snug" style={{ color: T.MUTED }}>
                     {row.datespot}
                   </span>
@@ -563,13 +518,13 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
               </tr>
             ))}
             <tr>
-              <th scope="row" className="px-2 sm:px-4 py-4 text-[10px] sm:text-sm font-extrabold" style={{ borderTop, color: T.DARK }}>Upgrade price</th>
-              <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop, background: premiumBg }}>
+              <th scope="row" className="px-1.5 sm:px-4 py-2.5 md:py-4 text-[10px] sm:text-sm font-extrabold" style={{ borderTop, color: T.DARK }}>Upgrade price</th>
+              <td className="px-1.5 sm:px-4 py-2.5 md:py-4 text-center" style={{ borderTop, background: premiumBg }}>
                 <span className="block text-[10px] sm:text-xs line-through" style={{ color: T.MUTED }}>{formatPrice(PRICING.mobile.original)}</span>
                 <span className="block text-lg sm:text-2xl font-black" style={{ color: T.isDark ? '#FF9999' : B2 }}>{formatPrice(PRICING.mobile.amount)}</span>
                 <span className="block text-[9px] sm:text-xs font-semibold" style={{ color: T.MUTED }}>Launch offer</span>
               </td>
-              <td className="px-2 sm:px-4 py-4 text-center" style={{ borderTop }}>
+              <td className="px-1.5 sm:px-4 py-2.5 md:py-4 text-center" style={{ borderTop }}>
                 <span className="text-[10px] sm:text-xs font-semibold" style={{ color: T.MUTED }}>Standard Datespot membership</span>
               </td>
             </tr>
@@ -604,15 +559,15 @@ function FAQ() {
   const T = useT();
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="py-7">
+    <section className="py-4">
       <h2 className="text-xl font-extrabold mb-1" style={{ color: T.DARK }}>Upgrade FAQs</h2>
       <p className="text-xs font-medium mb-4" style={{ color: T.MUTED }}>Everything to know before moving from Datespot to Smooch X</p>
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         {UPGRADE_FAQS.map((item, i) => (
           <div key={item.q} className="rounded-xl overflow-hidden" style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}` }}>
             <button type="button" onClick={() => setOpen(open === i ? null : i)}
               aria-expanded={open === i} aria-controls={`mobile-upgrade-faq-${i}`}
-              className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left">
+              className="w-full flex items-center justify-between gap-3 px-3 py-3 text-left">
               <span className="text-xs font-bold" style={{ color: T.DARK }}>{item.q}</span>
               <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${open === i ? 'rotate-180' : ''}`} style={{ color: B1 }} />
             </button>
@@ -691,14 +646,14 @@ function MobileApp() {
 
       {/* Main Content */}
       <div className="max-w-md mx-auto px-4">
-        <header className="pt-12 pb-6">
-          <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 mb-4 text-[10px] font-extrabold uppercase tracking-wider" style={{ color: T.isDark ? '#FF9999' : B2, background: T.isDark ? '#421818' : '#FFF0F0' }}>
+        <header className="pt-8 pb-2">
+          <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 mb-3 text-[9px] font-extrabold uppercase tracking-wider" style={{ color: T.isDark ? '#FF9999' : B2, background: T.isDark ? '#421818' : '#FFF0F0' }}>
             <Sparkles className="w-3 h-3" /> Exclusive upgrade for Datespot members
           </div>
-          <h1 className="text-[32px] leading-[1.15] font-black tracking-tight mb-3" style={{ color: T.DARK }}>
+          <h1 className="text-[clamp(26px,7vw,32px)] leading-[1.12] font-black tracking-tight mb-2" style={{ color: T.DARK }}>
             Upgrade to <span style={{ color: B1 }}>Smooch X</span>
           </h1>
-          <p className="text-base font-bold leading-relaxed" style={{ color: T.DARK }}>
+          <p className="text-[13px] leading-[1.55] font-semibold" style={{ color: T.DARK }}>
             Meet Smooch X: VIP women profiles, free private pass, exclusive content, premium services and WhatsApp access.
           </p>
         </header>
@@ -710,17 +665,17 @@ function MobileApp() {
         <GroupPreviewSlider images={IMAGES} mobile />
 
         {/* Final CTA */}
-        <section className="pt-2 pb-8">
+        <section className="pt-2 pb-5">
           <div className="rounded-3xl overflow-hidden" style={{ background: T.CARD_BG, border: '1px solid rgba(243,2,2,0.22)', boxShadow: `0 0 40px ${B1}15` }}>
             <div className="h-[3px]" style={{ background: HERO_SOLID }} />
-            <div className="px-5 py-5 flex flex-col items-center text-center gap-4">
+            <div className="px-4 py-4 flex flex-col items-center text-center gap-3">
               <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest" style={{ color: T.isDark ? B1 : B2, background: T.isDark ? 'rgba(243,2,2,.12)' : '#FFF0F0', border: '1px solid rgba(243,2,2,.32)' }}><Sparkles className="w-3 h-3" /> Launch Offer</div>
 
 
               {/* Price */}
               <div className="flex items-baseline gap-2 justify-center">
                 <span className="text-sm line-through font-semibold" style={{ color: T.MUTED }}>{formatPrice(PRICING.mobile.original)}</span>
-                <span className="font-black text-4xl leading-none" style={{ color: T.isDark ? B1 : B2 }}>{formatPrice(PRICING.mobile.amount)}</span>
+                <span className="font-black text-3xl leading-none" style={{ color: T.isDark ? B1 : B2 }}>{formatPrice(PRICING.mobile.amount)}</span>
               </div>
 
               {/* CTA Button */}
@@ -728,7 +683,7 @@ function MobileApp() {
                 whileTap={{ scale: 0.97 }}
                 onClick={() => handleJoin('full')}
                 className="w-full rounded-xl font-black flex items-center justify-center gap-2 relative overflow-hidden"
-                style={{ background: HERO_SOLID, color: '#FFFFFF', boxShadow: `0 6px 24px ${B1}50`, padding: '14px 20px' }}>
+                style={{ background: HERO_SOLID, color: '#FFFFFF', boxShadow: `0 6px 24px ${B1}50`, padding: '12px 16px' }}>
                 <motion.div className="absolute inset-0"
                   animate={{ x: ['-100%', '100%'] }}
                   transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }}
@@ -745,21 +700,21 @@ function MobileApp() {
         <GroupComparison onJoin={() => handleJoin('full')} />
 
         {/* What You Unlock */}
-        <section className="py-5">
-          <div className="mb-4">
+        <section className="py-3">
+          <div className="mb-3">
             <h2 className="font-extrabold text-xl" style={{ color: T.DARK, letterSpacing: '-0.03em' }}>What You Unlock</h2>
             <p className="text-xs font-semibold mt-0.5" style={{ color: T.MUTED }}>Premium benefits beyond Datespot</p>
           </div>
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-2">
             {FEAT.map((f, i) => {
               const Icon = f.icon;
               return (
                 <motion.div key={i}
                   initial={{ opacity: 0, x: -14 }} whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                  className="flex items-center gap-3.5 rounded-2xl px-4 py-3 relative"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 relative"
                   style={{ background: T.CARD_BG, border: `1px solid ${f.c1}22`, boxShadow: T.isDark ? 'none' : '0 1px 6px rgba(0,0,0,0.05)' }}>
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                     style={{ background: `${f.c1}` }}>
                     <Icon className="w-4.5 h-4.5 text-white" style={{ width: 18, height: 18 }} />
                   </div>
@@ -784,9 +739,6 @@ function MobileApp() {
 
         {/* Meet Admin */}
         <MeetAdmin />
-
-        {/* Reviews slider */}
-        <UpgradeExperiences />
 
         {/* FAQ */}
         <FAQ />
@@ -1117,11 +1069,6 @@ function DesktopVersion({ onOpenPayment, showPayment, onClosePayment, paymentTyp
         <WhyTrust />
       </section>
 
-
-      {/* Upgrade experiences */}
-      <section className="max-w-5xl mx-auto px-8 pb-12">
-        <UpgradeExperiences />
-      </section>
 
       {/* FAQ */}
       <section className="max-w-3xl mx-auto px-8 pb-12">
