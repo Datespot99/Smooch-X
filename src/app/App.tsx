@@ -586,24 +586,16 @@ function StickyCTA({ onJoin }: { onJoin: () => void }) {
         <motion.div
           initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }}
           transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-          className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-5 pt-2"
-          style={{ background: T.isDark ? '#000000' : '#FFFFFF' }}>
+          className="fixed bottom-3 left-0 right-0 z-40 px-4 pointer-events-none">
           <motion.button
             onClick={onJoin}
             whileTap={{ scale: 0.97 }}
-            className="relative w-full max-w-md mx-auto block rounded-2xl overflow-hidden"
-            style={{ background: HERO_SOLID, boxShadow: `0 6px 28px ${B1}60` }}>
-            {/* Shimmer sweep */}
-            <motion.div className="absolute inset-0 pointer-events-none"
-              animate={{ x: ['-100%', '160%'] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 1.4, ease: 'easeInOut' }}
-              style={{ background: 'rgba(255,255,255,0.14)', width: '60%' }} />
-            <div className="relative flex items-center justify-center gap-3 py-3.5 px-6">
-              <span className="font-black text-sm tracking-tight" style={{ color: '#FFFFFF' }}>Upgrade to Smooch X</span>
-              <span className="text-[11px] line-through font-semibold" style={{ color: '#800D1B' }}>{formatPrice(PRICING.mobile.original)}</span>
-              <span className="font-black text-sm" style={{ color: '#FFFFFF' }}>{formatPrice(PRICING.mobile.amount)}</span>
-              <ArrowRight className="w-4 h-4" style={{ color: '#FFFFFF' }} />
-            </div>
+            className="relative w-full max-w-[320px] mx-auto flex items-center justify-center rounded-xl overflow-hidden pointer-events-auto"
+            style={{ background: HERO_SOLID, boxShadow: `0 4px 18px ${B1}40` }}>
+            <span className="flex items-center justify-center gap-2 px-4 py-3 whitespace-nowrap">
+              <span className="font-extrabold text-[13px] tracking-tight" style={{ color: '#FFFFFF' }}>Upgrade to Smooch X</span>
+              <ArrowRight className="w-4 h-4 shrink-0" style={{ color: '#FFFFFF' }} />
+            </span>
           </motion.button>
         </motion.div>
       )}
