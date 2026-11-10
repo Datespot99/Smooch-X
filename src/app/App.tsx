@@ -231,23 +231,23 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyZ4CDmSSpm80A-xyX-2f
 
 function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void; onComplete: () => void; gate?: boolean }) {
   const T = useT();
-  const [membershipNumber, setMembershipNumber] = useState('');
+  const [memberName, setMemberName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const number = membershipNumber.trim().toUpperCase();
-    if (!/^[A-Z0-9][A-Z0-9_-]{0,39}$/.test(number)) {
-      setError('Enter your Datespot membership number using letters, numbers or hyphens.');
+    const name = memberName.trim().replace(/\s+/g, ' ');
+    if (name.length < 2 || name.length > 60 || !/^[\p{L}\p{M}][\p{L}\p{M} .'-]*$/u.test(name)) {
+      setError('Enter a valid name (2–60 characters).');
       return;
     }
     setLoading(true);
     try {
-      // The opaque lead request does not confirm membership status.
-      await fetch(`${SHEET_URL}?${new URLSearchParams({ membershipNumber: number })}`, { mode: 'no-cors' });
-      localStorage.setItem('sx_membership_number', number);
+      // Store the entered name; the opaque request does not verify membership.
+      await fetch(`${SHEET_URL}?${new URLSearchParams({ name })}`, { mode: 'no-cors' });
+      localStorage.setItem('sx_member_name', name);
       localStorage.setItem('sx_membership_entered', '1');
       onComplete();
     } catch {
@@ -264,7 +264,7 @@ function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void
       <motion.div
         initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}
         transition={{ duration: .2 }}
-        role="dialog" aria-modal="true" aria-label="Enter your Datespot membership number"
+        role="dialog" aria-modal="true" aria-label="Enter Your Name"
         className="relative z-10 w-full max-w-[350px] rounded-2xl overflow-hidden"
         style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}`, boxShadow: T.isDark ? '0 12px 36px rgba(0,0,0,.4)' : '0 12px 36px rgba(0,0,0,.08)' }}>
         {!gate && <button type="button" onClick={onClose} aria-label="Close" className="absolute top-3 right-3 p-1.5 rounded-lg">
@@ -279,19 +279,19 @@ function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void
             Upgrade to <span style={{ color: B1 }}>Smooch X</span>
           </h1>
           <p className="text-xs leading-relaxed text-center mb-5" style={{ color: T.MUTED }}>
-            Enter your Datespot membership number.
+            Enter Your Name
           </p>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <div>
-              <label htmlFor="sx-membership-number" className="block text-xs font-bold mb-1.5" style={{ color: T.DARK }}>
-                Membership Number
+              <label htmlFor="sx-member-name" className="block text-xs font-bold mb-1.5" style={{ color: T.DARK }}>
+                Your Name
               </label>
-              <input id="sx-membership-number" type="text" autoComplete="off" autoCapitalize="characters"
-                spellCheck={false} required maxLength={40}
-                placeholder="Your Datespot membership number" value={membershipNumber}
-                onChange={e => setMembershipNumber(e.target.value)}
+              <input id="sx-member-name" type="text" autoComplete="name" autoCapitalize="words"
+                spellCheck={false} required maxLength={60}
+                placeholder="Enter Your Name" value={memberName}
+                onChange={e => setMemberName(e.target.value)}
                 className="w-full rounded-xl px-3.5 py-3 outline-none text-sm font-semibold focus-visible:ring-2"
-                style={{ background: T.isDark ? '#100909' : '#FFF8F8', color: T.DARK, border: `1px solid ${membershipNumber ? B1 : T.BORDER}`, caretColor: B1 }} />
+                style={{ background: T.isDark ? '#100909' : '#FFF8F8', color: T.DARK, border: `1px solid ${memberName ? B1 : T.BORDER}`, caretColor: B1 }} />
             </div>
             {error && <p role="alert" className="text-xs font-semibold rounded-lg px-3 py-2"
               style={{ color: T.isDark ? '#FF9999' : '#A80000', background: T.isDark ? '#421818' : '#FFF0F0' }}>{error}</p>}
@@ -537,12 +537,12 @@ function GroupComparison({ onJoin }: { onJoin: () => void }) {
 
 // ─── Upgrade FAQs ─────────────────────────────────────────────────────────────
 const UPGRADE_FAQS = [
-  { q: 'Who can upgrade to Smooch X?', a: 'Smooch X is an optional premium upgrade for Datespot members. Enter your Datespot membership number to start. The team must confirm your membership status.' },
+  { q: 'Who can upgrade to Smooch X?', a: 'Smooch X is an optional premium upgrade for Datespot members. Enter your name to start. The team must confirm your membership status.' },
   { q: 'What do I unlock by upgrading?', a: 'VIP women profiles, a free private pass, free in-group exclusive content, premium services, WhatsApp access and higher group hours.' },
   { q: 'How is Smooch X different from Datespot?', a: 'Datespot offers limited women profiles and group hours, with separate charges for private passes and exclusive content. Smooch X adds VIP profiles, higher group hours and more included benefits.' },
   { q: 'Are private passes and exclusive content free?', a: 'Yes. The listed private pass and in-group exclusive content are included with Smooch X membership without separate charges. The upgrade itself is paid.' },
   { q: 'How much does the upgrade cost?', a: `The launch offer is ${formatPrice(PRICING.mobile.amount)}, reduced from ${formatPrice(PRICING.mobile.original)}.` },
-  { q: 'How do I upgrade?', a: 'Enter your Datespot membership number, continue to UPI payment and submit your payment screenshot. The team confirms payment and membership before granting Smooch X access.' },
+  { q: 'How do I upgrade?', a: 'Enter your name, continue to UPI payment and submit your payment screenshot. The team confirms payment and membership before granting Smooch X access.' },
   { q: 'What are higher group hours?', a: 'Smooch X offers more group access hours than Datespot. Ask the admin for the current schedule.' },
   { q: 'Does Smooch X include WhatsApp access?', a: 'Yes, WhatsApp access is an additional Smooch X benefit.' },
 ];
@@ -1105,11 +1105,11 @@ function ChatOverlay({ onClose, onOpenPayment }: { onClose: () => void; onOpenPa
     setTimeout(() => {
       setIsTyping(false);
       const answers = [
-        'Smooch X is an upgrade for existing Datespot members. Enter your Datespot membership number to begin.',
+        'Smooch X is an upgrade for existing Datespot members. Enter your name to begin.',
         'Unlock VIP women profiles, a free private pass, free in-group exclusive content, premium services, WhatsApp access and higher group hours.',
         `The launch offer is ${formatPrice(PRICING.mobile.amount)} (originally ${formatPrice(PRICING.mobile.original)}).`,
         'Smooch X offers higher group hours than Datespot. Ask the admin for the current schedule.',
-        'Enter your membership number, pay using UPI and submit a screenshot. The team confirms payment and membership before sharing access.',
+        'Enter your name, pay using UPI and submit a screenshot. The team confirms payment and membership before sharing access.',
       ];
       const msgs: Message[] = [{ id: (Date.now() + 1).toString(), sender: 'bot', type: 'text', content: answers[index] ?? answers[0],
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }];
@@ -1294,12 +1294,12 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
     setUploadState('submitting');
     try {
       const base64 = await compressImage(file);
-      const membershipNumber = localStorage.getItem('sx_membership_number') ?? '';
+      const memberName = localStorage.getItem('sx_member_name') ?? '';
       await fetch(SHEET_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'screenshot', membershipNumber, mimeType: 'image/jpeg', fileName: `payment_${Date.now()}.jpg`, image: base64 }),
+        body: JSON.stringify({ action: 'screenshot', name: memberName, mimeType: 'image/jpeg', fileName: `payment_${Date.now()}.jpg`, image: base64 }),
       });
       // The opaque response does not prove the screenshot was received or the payment verified.
       setUploadState('submitted');
