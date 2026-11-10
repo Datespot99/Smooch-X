@@ -1303,49 +1303,43 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-lg p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-4">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0" onClick={uploadState === 'idle' ? onClose : undefined} />
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="relative w-full max-w-md max-h-[92dvh] overflow-y-auto rounded-3xl shadow-2xl bg-white">
+        className="relative w-full max-w-[350px] max-h-[90dvh] overflow-y-auto rounded-2xl shadow-xl bg-white">
         {uploadState === 'idle' && (
-          <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full z-20 hover:bg-gray-100 transition-colors">
+          <button onClick={onClose} className="absolute top-2 right-2 p-1.5 rounded-full z-20 hover:bg-gray-100 transition-colors">
             <X className="w-4 h-4 text-gray-400" />
           </button>
         )}
 
         {/* Header */}
-        <div className="px-4 pt-4 pb-3 flex items-center gap-2.5">
+        <div className="px-4 pt-4 pb-2.5 flex items-center gap-2">
           <img src={`${ASSET_BASE}smooch-x-logo.svg`} alt="Smooch X logo"
-            className="w-10 h-10 rounded-xl shrink-0 object-cover" />
+            className="w-8 h-8 rounded-lg shrink-0 object-cover" />
           <div className="flex-1 min-w-0">
             <div className="font-bold text-sm leading-none text-gray-900">Upgrade to Smooch X</div>
-            <div className="text-[10px] mt-0.5 font-medium text-gray-400">Launch offer · Lifetime Telegram access</div>
+            
           </div>
-          <div className="text-right shrink-0 mr-7">
+          <div className="text-right shrink-0 mr-6">
             {ORIGINAL_AMT && <div className="text-[11px] line-through text-gray-400">{formatPrice(ORIGINAL_AMT)}</div>}
-            <div className="font-extrabold text-2xl leading-none" style={{ color: B2 }}>{formatPrice(AMOUNT)}</div>
+            <div className="font-extrabold text-xl leading-none" style={{ color: B2 }}>{formatPrice(AMOUNT)}</div>
           </div>
         </div>
 
-        <div className="px-4 pb-4">
+        <div className="px-4 pb-3">
           {uploadState === 'idle' && (
             <>
-              {/* UPI payment details; countdown does not affect the launch offer. */}
-              <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl mb-3" style={{ background: '#FFF0F0', border: '1px solid #F7C7C7' }}>
-                <div className="flex items-center gap-2 min-w-0">
-                  <CreditCard className="w-3.5 h-3.5 shrink-0" style={{ color: B1 }} />
-                  <p className="text-[10px] font-black uppercase tracking-wide" style={{ color: "#000000" }}>Secure UPI Payment</p>
-                </div>
-                <span aria-label={`Countdown ${countdown}`} role="timer"
-                  className="text-[12px] font-extrabold tabular-nums rounded-md px-2 py-1 shrink-0"
-                  style={{ background: '#FFFFFF', border: '1px solid #F7C7C7', color: '#705454' }}>{countdown}</span>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-bold text-gray-700">Pay securely via UPI</span>
+                <span aria-label={`Countdown ${countdown}`} role="timer" className="text-[11px] font-semibold tabular-nums text-gray-500">{countdown}</span>
               </div>
-              <div className="flex rounded-xl p-1 mb-3" style={{ background: '#FFF2F2' }}>
+              <div className="flex rounded-lg p-0.5 mb-2" style={{ background: '#FFF2F2' }}>
                 {(['qr', 'upi'] as const).map(t => (
                   <button key={t} onClick={() => setTab(t)}
-                    className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
+                    className="flex-1 py-1.5 rounded-md text-xs font-bold transition-all"
                     style={tab === t ? { background: B1, color: '#FFFFFF' } : { background: 'transparent', color: '#866666' }}>
                     {t === 'qr' ? 'Scan QR' : 'UPI ID'}
                   </button>
@@ -1355,24 +1349,24 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
               <AnimatePresence mode="wait">
                 {tab === 'qr' ? (
                   <motion.div key="qr" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                    <div className="rounded-2xl p-3 mb-2 flex items-center justify-center" style={{ background: '#FFF8F8' }}>
-                      <QRCodeSVG value={upiUrl} size={148} level="H" />
+                    <div className="rounded-xl p-2 mb-1 flex items-center justify-center" style={{ background: '#FFF8F8' }}>
+                      <QRCodeSVG value={upiUrl} size={142} level="H" />
                     </div>
-                    <p className="text-center text-[10px] mb-2 font-medium" style={{ color: "#705454" }}>Scan with any UPI app</p>
+                    <p className="text-center text-[10px] mb-1 font-medium" style={{ color: "#705454" }}>Scan with any UPI app</p>
                   </motion.div>
                 ) : (
                   <motion.div key="upi" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mb-3">
-                    <div className="rounded-2xl p-4 mb-2" style={{ background: '#FFF8F8' }}>
+                    <div className="rounded-xl p-3 mb-1" style={{ background: '#FFF8F8' }}>
                       <p className="text-xs font-bold uppercase tracking-wide mb-1.5" style={{ color: "#705454" }}>UPI ID</p>
-                      <p className="font-mono text-sm font-bold break-all mb-4 text-gray-800">{UPI_ID}</p>
+                      <p className="font-mono text-xs font-bold break-all mb-2 text-gray-800">{UPI_ID}</p>
                       <div className="flex gap-2">
                         <button onClick={() => { navigator.clipboard.writeText(UPI_ID); toast.success('Copied!'); }}
-                          className="flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+                          className="flex-1 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
                           style={{ border: `1.5px solid ${B1}`, color: B1, background: 'white' }}>
                           <Copy className="w-3.5 h-3.5" /> Copy
                         </button>
                         <a href={upiUrl}
-                          className="flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+                          className="flex-1 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
                           style={{ background: HERO_SOLID }}
                           onClick={() => toast.success('Opening UPI app...')}>
                           <ExternalLink className="w-3.5 h-3.5" /> Pay
@@ -1383,21 +1377,11 @@ function PaymentModal({ onClose, paymentType, device }: { onClose: () => void; p
                 )}
               </AnimatePresence>
 
-              {/* UPI apps accepted: reference image */}
-              <div className="rounded-lg px-2 py-1 mb-2 max-w-[220px] mx-auto" style={{ background: '#FFFFFF', border: '1px solid #F5DDE0' }}>
-                <img
-                  src={`${ASSET_BASE}upi-apps-accepted.webp`}
-                  alt="UPI, Paytm, Google Pay and PhonePe accepted"
-                  className="block w-full h-auto max-h-[90px] object-contain mx-auto rounded-md"
-                  loading="lazy"
-                />
-              </div>
-
-              <div className="pt-3 mt-1" style={{ borderTop: `1px solid ${B1}12` }}>
-                <p className="text-center text-[10px] mb-2 font-medium" style={{ color: "#705454" }}>Submit your payment screenshot for admin review</p>
+              <div className="pt-2 mt-1" style={{ borderTop: `1px solid ${B1}12` }}>
+                <p className="text-center text-[10px] mb-2 font-medium" style={{ color: "#705454" }}>Upload payment screenshot for review</p>
                 <input type="file" id="ss-upload" className="hidden" accept="image/*" onChange={handleFileChange} />
                 <label htmlFor="ss-upload"
-                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl font-bold text-sm cursor-pointer active:scale-95 transition-transform"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold text-sm cursor-pointer active:scale-95 transition-transform"
                   style={{ background: B1, color: '#FFFFFF' }}>
                   <Upload className="w-4 h-4" /> Upload Screenshot
                 </label>
