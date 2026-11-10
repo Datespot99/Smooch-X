@@ -258,58 +258,50 @@ function LeadModal({ onClose, onComplete, gate = false }: { onClose?: () => void
   };
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+    <div className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-auto px-4 py-6"
       style={{ ...dotGridStyle(T), fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {!gate && <div className="absolute inset-0" onClick={onClose} />}
       <motion.div
-        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
-        transition={{ duration: .25 }}
+        initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}
+        transition={{ duration: .2 }}
         role="dialog" aria-modal="true" aria-label="Enter your Datespot membership number"
-        className="relative z-10 w-full max-w-[440px] rounded-[24px] overflow-hidden"
-        style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}`, boxShadow: T.isDark ? '0 24px 64px rgba(0,0,0,.55)' : '0 24px 64px rgba(0,0,0,.10)' }}>
-        <div className="h-1" style={{ background: B1 }} />
-        {!gate && <button type="button" onClick={onClose} aria-label="Close" className="absolute top-5 right-5 p-1.5 rounded-lg">
+        className="relative z-10 w-full max-w-[350px] rounded-2xl overflow-hidden"
+        style={{ background: T.CARD_BG, border: `1px solid ${T.BORDER}`, boxShadow: T.isDark ? '0 12px 36px rgba(0,0,0,.4)' : '0 12px 36px rgba(0,0,0,.08)' }}>
+        {!gate && <button type="button" onClick={onClose} aria-label="Close" className="absolute top-3 right-3 p-1.5 rounded-lg">
           <X className="w-4 h-4" style={{ color: T.MUTED }} />
         </button>}
-        <div className="px-6 py-9 sm:px-9 sm:py-11">
-          <div className="flex justify-center items-center gap-3 mb-8">
-            <img src={`${ASSET_BASE}smooch-x-logo.svg`} alt="" className="w-11 h-11 rounded-xl object-cover" />
-            <span className="font-black text-xl tracking-tight" style={{ color: T.DARK }}>Smooch X</span>
+        <div className="px-5 py-6 sm:px-6">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <img src={`${ASSET_BASE}smooch-x-logo.svg`} alt="" className="w-8 h-8 rounded-lg object-cover" />
+            <span className="font-black text-lg tracking-tight" style={{ color: T.DARK }}>Smooch X</span>
           </div>
-          <div className="text-center mb-7">
-            <span className="inline-block rounded-full px-3 py-1.5 text-[10px] font-black uppercase tracking-widest mb-4"
-              style={{ color: T.isDark ? '#FF9999' : B2, background: T.isDark ? '#421818' : '#FFF0F0' }}>
-              Exclusive Datespot Member Upgrade
-            </span>
-            <h1 className="text-2xl sm:text-[28px] leading-tight font-black tracking-tight mb-3" style={{ color: T.DARK }}>
-              Unlock your Smooch X upgrade
-            </h1>
-            <p className="text-sm leading-relaxed" style={{ color: T.MUTED }}>
-              Enter your Datespot membership number to continue to the premium upgrade.
-            </p>
-          </div>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <h1 className="text-xl font-black tracking-tight text-center mb-1.5" style={{ color: T.DARK }}>
+            Upgrade to <span style={{ color: B1 }}>Smooch X</span>
+          </h1>
+          <p className="text-xs leading-relaxed text-center mb-5" style={{ color: T.MUTED }}>
+            Enter your Datespot membership number.
+          </p>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <div>
-              <label htmlFor="sx-membership-number" className="block text-xs font-bold mb-2" style={{ color: T.DARK }}>
-                Datespot Membership Number
+              <label htmlFor="sx-membership-number" className="block text-xs font-bold mb-1.5" style={{ color: T.DARK }}>
+                Membership Number
               </label>
               <input id="sx-membership-number" type="text" autoComplete="off" autoCapitalize="characters"
                 spellCheck={false} required maxLength={40}
-                placeholder="Enter your membership number" value={membershipNumber}
+                placeholder="Your Datespot membership number" value={membershipNumber}
                 onChange={e => setMembershipNumber(e.target.value)}
-                className="w-full rounded-xl px-4 py-3.5 outline-none text-sm font-semibold focus-visible:ring-2"
+                className="w-full rounded-xl px-3.5 py-3 outline-none text-sm font-semibold focus-visible:ring-2"
                 style={{ background: T.isDark ? '#100909' : '#FFF8F8', color: T.DARK, border: `1px solid ${membershipNumber ? B1 : T.BORDER}`, caretColor: B1 }} />
-              <p className="text-[11px] mt-2" style={{ color: T.MUTED }}>Use the number provided with your Datespot membership.</p>
             </div>
             {error && <p role="alert" className="text-xs font-semibold rounded-lg px-3 py-2"
               style={{ color: T.isDark ? '#FF9999' : '#A80000', background: T.isDark ? '#421818' : '#FFF0F0' }}>{error}</p>}
             <button type="submit" disabled={loading}
-              className="w-full rounded-xl py-3.5 font-extrabold text-sm flex items-center justify-center gap-2 disabled:opacity-70"
+              className="w-full rounded-xl py-3 font-extrabold text-sm flex items-center justify-center gap-2 disabled:opacity-70"
               style={{ background: HERO_SOLID, color: '#FFFFFF' }}>
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continue to Smooch X <ArrowRight className="w-4 h-4" /></>}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continue <ArrowRight className="w-4 h-4" /></>}
             </button>
-            <p className="text-center text-[11px] leading-relaxed" style={{ color: T.MUTED }}>
-              Membership and payment are reviewed before Smooch X access is granted.
+            <p className="text-center text-[10px] leading-relaxed" style={{ color: T.MUTED }}>
+              Membership and payment are reviewed before access.
             </p>
           </form>
         </div>
